@@ -106,7 +106,7 @@ RUN \
 # Which commit to checkout and build.
 ARG commit=HEAD
 
-# Pull latest source code for SMC and checkout requested commit (or HEAD)
+# Pull latest source code for CoCalc and checkout requested commit (or HEAD)
 RUN \
   git clone https://github.com/sagemathinc/cocalc.git && \
   cd /cocalc && git pull && git fetch origin && git checkout ${commit:-HEAD}
