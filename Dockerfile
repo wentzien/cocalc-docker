@@ -115,6 +115,11 @@ RUN \
   git clone https://github.com/sagemathinc/cocalc.git && \
   cd /cocalc && git pull && git fetch origin && git checkout ${commit:-HEAD}
 
+# Install npm
+RUN \
+  apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y npm 
+
 # Build and install all deps
 RUN \
      cd /cocalc/src \
