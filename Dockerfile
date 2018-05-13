@@ -1,4 +1,4 @@
-FROM ubuntu:17.10
+FROM ubuntu:18.04
 
 MAINTAINER William Stein <wstein@sagemath.com>
 
@@ -10,17 +10,22 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV TERM screen
 
+
 # So we can source (see http://goo.gl/oBPi5G)
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Ubuntu software that are used by CoCalc (latex, pandoc, sage, jupyter)
 RUN \
      apt-get update \
-  && apt-get install -y \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
        software-properties-common \
        texlive \
        texlive-latex-extra \
-       texlive-xetex \
+       texlive-xetex
+
+RUN \
+    apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y \
        tmux \
        flex \
        bison \
@@ -40,7 +45,11 @@ RUN \
        sudo \
        psmisc \
        haproxy \
-       nginx \
+       nginx
+
+ RUN \
+     apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
        vim \
        bup \
        inetutils-ping \
@@ -55,8 +64,12 @@ RUN \
        libpq5 \
        libpq-dev \
        build-essential \
+       automake
+
+RUN \
+   apt-get update \
+&& DEBIAN_FRONTEND=noninteractive apt-get install -y \
        gfortran \
-       automake \
        dpkg-dev \
        libssl-dev \
        imagemagick \
@@ -66,7 +79,9 @@ RUN \
        smem \
        python3-yaml \
        locales \
-       locales-all
+       locales-all \
+       postgresql \
+       postgresql-contrib
 
 # Jupyter from pip (since apt-get jupyter is ancient)
 RUN \
@@ -91,17 +106,6 @@ RUN    mkdir -p /usr/local/ \
     && sync
 
 RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
-
-# Build and install PostgreSQL
-RUN \
-     cd /tmp \
-  && wget https://ftp.postgresql.org/pub/source/v9.6.1/postgresql-9.6.1.tar.bz2 \
-  && tar xf postgresql-9.6.1.tar.bz2 \
-  && cd postgresql-9.6.1 \
-  && ./configure --with-openssl --prefix=/usr/ \
-  && make -j16 install \
-  && cd /tmp \
-  && rm -rf /tmp/postgresql-9.6.1 /tmp/postgresql-9.6.1.tar.bz2
 
 # Which commit to checkout and build.
 ARG commit=HEAD
@@ -173,4 +177,3 @@ COPY bashrc /root/.bashrc
 CMD /root/run.py
 
 EXPOSE 80 443
-
