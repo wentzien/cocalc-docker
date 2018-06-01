@@ -21,7 +21,9 @@ RUN \
        software-properties-common \
        texlive \
        texlive-latex-extra \
-       texlive-xetex
+       texlive-extra-utils \
+       texlive-xetex \
+       texlive-luatex
 
 RUN \
     apt-get update \
@@ -87,11 +89,6 @@ RUN \
 RUN \
   pip install "ipython<6" jupyter
 
-# Install Node.js
-RUN \
-  wget -qO- https://deb.nodesource.com/setup_6.x | bash - && \
-  apt-get install -y nodejs
-
 # Build and install Sage -- see https://github.com/sagemath/docker-images
 COPY scripts/ /tmp/scripts
 RUN chmod -R +x /tmp/scripts
@@ -107,6 +104,20 @@ RUN    mkdir -p /usr/local/ \
 
 RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
 
+# Install sage scripts system-wide
+RUN echo "install_scripts('/usr/local/bin/')" | sage
+
+# Install SageTex
+RUN \
+     sudo -H -E -u sage sage -p sagetex \
+  && cp -rv /usr/local/sage/local/share/texmf/tex/latex/sagetex/ /usr/share/texmf/tex/latex/ \
+  && texhash
+
+# Install Node.js
+RUN \
+  wget -qO- https://deb.nodesource.com/setup_8.x | bash - && \
+  apt-get install -y nodejs
+
 # Which commit to checkout and build.
 ARG commit=HEAD
 
@@ -115,10 +126,11 @@ RUN \
   git clone https://github.com/sagemathinc/cocalc.git && \
   cd /cocalc && git pull && git fetch origin && git checkout ${commit:-HEAD}
 
-# Install npm
+# Install npm, then use it to install the latest version of npm
 RUN \
   apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y npm 
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y npm \
+  && /usr/bin/npm install -g npm
 
 # Build and install all deps
 RUN \
@@ -130,21 +142,12 @@ RUN \
 # Install code into Sage
 RUN cd /cocalc/src && sage -pip install --upgrade smc_sagews/
 
-# Install sage scripts system-wide
-RUN echo "install_scripts('/usr/local/bin/')" | sage
-
-# Install SageTex
-RUN \
-     sudo -H -E -u sage sage -p sagetex \
-  && cp -rv /usr/local/sage/local/share/texmf/tex/latex/sagetex/ /usr/share/texmf/tex/latex/ \
-  && texhash
-
 RUN echo "umask 077" >> /etc/bash.bashrc
 
 # Install R Jupyter Kernel package into R itself (so R kernel works)
 RUN echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'httr', 'devtools', 'uuid', 'digest'), repos='http://cran.us.r-project.org'); devtools::install_github('IRkernel/IRkernel')" | sage -R --no-save
 
-# Install Jupyter kernels definitions
+# Install some Jupyter kernel definitions
 COPY kernels /usr/local/share/jupyter/kernels
 
 # Configure so that R kernel actually works -- see https://github.com/IRkernel/IRkernel/issues/388
@@ -154,12 +157,12 @@ COPY kernels/ir/Rprofile.site /usr/local/sage/local/lib/R/etc/Rprofile.site
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 
 # Install Julia
+ARG JULIA=0.6.3
 RUN cd /tmp \
- && wget https://julialang-s3.julialang.org/bin/linux/x64/0.6/julia-0.6.0-linux-x86_64.tar.gz \
- && echo 3a27ea78b06f46701dc4274820d9853789db205bce56afdc7147f7bd6fa83e41 julia-0.6.0-linux-x86_64.tar.gz | sha256sum -c \
- && tar xf julia-0.6.0-linux-x86_64.tar.gz -C /opt \
- && rm  -f julia-0.6.0-linux-x86_64.tar.gz \
- && ln -s /opt/julia-903644385b/bin/julia /usr/local/bin
+ && wget https://julialang-s3.julialang.org/bin/linux/x64/0.6/julia-${JULIA}-linux-x86_64.tar.gz \
+ && tar xf julia-${JULIA}-linux-x86_64.tar.gz -C /opt \
+ && rm  -f julia-${JULIA}-linux-x86_64.tar.gz \
+ && ln -s /opt/julia-*/bin/julia /usr/local/bin
 
 # Install IJulia kernel
 RUN echo '\
