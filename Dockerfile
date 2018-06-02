@@ -113,10 +113,11 @@ RUN \
   && cp -rv /usr/local/sage/local/share/texmf/tex/latex/sagetex/ /usr/share/texmf/tex/latex/ \
   && texhash
 
-# Install Node.js
+# Install Node.js and LATEST version of npm
 RUN \
   wget -qO- https://deb.nodesource.com/setup_8.x | bash - && \
-  apt-get install -y nodejs
+  apt-get install -y nodejs && \
+  /usr/bin/npm install -g npm
 
 # Which commit to checkout and build.
 ARG commit=HEAD
@@ -126,17 +127,15 @@ RUN \
   git clone https://github.com/sagemathinc/cocalc.git && \
   cd /cocalc && git pull && git fetch origin && git checkout ${commit:-HEAD}
 
-# Install npm, then use it to install the latest version of npm
-RUN \
-  apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y npm \
-  && /usr/bin/npm install -g npm
-
 # Build and install all deps
+# CRITICAL to install first web, then compute, since compute precompiles all the .js
+# for fast startup, but unfortunately doing so breaks ./install.py all --web, since
+# the .js files laying around somehow mess up cjsx loading. 
 RUN \
      cd /cocalc/src \
   && . ./smc-env \
-  && ./install.py all --compute --web \
+  && ./install.py all --web \
+  && ./install.py all --compute \
   && rm -rf /root/.npm /root/.node-gyp/
 
 # Install code into Sage
