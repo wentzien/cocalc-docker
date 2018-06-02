@@ -119,7 +119,7 @@ RUN \
   apt-get install -y nodejs && \
   /usr/bin/npm install -g npm
 
-# Which commit to checkout and build.
+# Commit to checkout and build.
 ARG commit=HEAD
 
 # Pull latest source code for CoCalc and checkout requested commit (or HEAD)
@@ -157,17 +157,17 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 
 # Install Julia
 ARG JULIA=0.6.3
-ARG JULIA_HASH=d55cadc350
 RUN cd /tmp \
  && wget https://julialang-s3.julialang.org/bin/linux/x64/0.6/julia-${JULIA}-linux-x86_64.tar.gz \
  && tar xf julia-${JULIA}-linux-x86_64.tar.gz -C /opt \
  && rm  -f julia-${JULIA}-linux-x86_64.tar.gz \
- && ln -s /opt/julia-${JULIA_HASH}/bin/julia /usr/local/bin
+ && mv /opt/julia-* /opt/julia \
+ && ln -s /opt/julia/bin/julia /usr/local/bin
 
 # Install IJulia kernel
 RUN echo '\
 ENV["JUPYTER"] = "/usr/local/bin/jupyter"; \
-ENV["JULIA_PKGDIR"] = "/opt/julia-${JULIA_HASH}/share/julia/site"; \
+ENV["JULIA_PKGDIR"] = "/opt/julia/share/julia/site"; \
 Pkg.init(); \
 Pkg.add("IJulia");' | julia \
  && mv -i "$HOME/.local/share/jupyter/kernels/julia-0.6" "/usr/local/share/jupyter/kernels/"
