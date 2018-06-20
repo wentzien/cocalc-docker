@@ -85,7 +85,7 @@ Get a bash shell insider the container, then connect to the database and make a 
 
     $ docker exec -it cocalc bash
     root@931045eda11f:/# coffee
-    coffee> require 'c'; db()
+    coffee> require 'c'
     coffee> db.make_user_admin(email_address:'wstein@gmail.com', cb:done())
 
 Obviously, you should really make the user you created (with its email address) an admin, not me!
@@ -93,7 +93,15 @@ Refresh your browser, and then you should see an extra admin panel in the lower 
 
 #### Account Creation Token
 
-After making your main account an admin as above, search for "Account Creation Token" in your account settings. Put some random  string there and other people will not be able to create accounts in your CoCalc container, without knowing that token.
+After making your main account an admin as above, search for "Account Creation Token" in the Admin tab. Put some random  string there and other people will not be able to create accounts in your CoCalc container, without knowing that token.
+
+### Terminal Height
+
+If `docker exec -it cocalc bash` doesn't seem to give you the right terminal height, e.g. content is only displayed in the uppper part of the terminal, this workaround may help when launching bash:
+```
+docker exec -e COLUMNS="`tput cols`" -e LINES="`tput lines`" -it cocalc bash
+```
+More information on this issue is in [moby issue 33794](https://github.com/moby/moby/issues/33794).
 
 ## Your data
 
