@@ -97,7 +97,7 @@ After making your main account an admin as above, search for "Account Creation T
 
 ### Terminal Height
 
-If bash sessions in the cocalc container don't seem to have the right terminal height, e.g. content is only displayed in the uppper part of the terminal, this workaround can help when launching the bash shell:
+If `docker exec -it cocalc bash` doesn't seem to give you the right terminal height, e.g. content is only displayed in the uppper part of the terminal, this workaround may help when launching bash:
 ```
 docker exec -e COLUMNS="`tput cols`" -e LINES="`tput lines`" -it cocalc bash
 ```
