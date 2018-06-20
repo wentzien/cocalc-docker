@@ -23,7 +23,8 @@ RUN \
        texlive-latex-extra \
        texlive-extra-utils \
        texlive-xetex \
-       texlive-luatex
+       texlive-luatex \
+       liblog-log4perl-perl
 
 RUN \
     apt-get update \
@@ -112,6 +113,11 @@ RUN \
      sudo -H -E -u sage sage -p sagetex \
   && cp -rv /usr/local/sage/local/share/texmf/tex/latex/sagetex/ /usr/share/texmf/tex/latex/ \
   && texhash
+
+# Install all aspell dictionaries, so that spell check will work in all languages.  This is
+# used by cocalc's spell checkers (for editors).  This takes about 80MB, which is well worth it.
+RUN \
+  apt-get install -y aspell-*
 
 # Install Node.js and LATEST version of npm
 RUN \
