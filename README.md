@@ -77,6 +77,21 @@ Then you can do
 
     ssh projectid@<your ip address> -p 2222
 
+Note that `project_id` is the hex id string for the project *without hyphens*. One way to show project id in this format is to open a .term file in the project and run this command. (This only works in CoCalc in Docker; USER is set differently in production CoCalc.)
+
+```
+echo $USER
+```
+
+To use SSH key authentication with the Docker container, have your private key file in the usual place in the host computer, for example `~/.ssh/.id_cocalc`, and copy the matching public key into your project's home directory. For example, you could do the following in a .term in your project:
+```
+cd
+mkdir .ssh
+chmod 700 .ssh
+vi .ssh/authorized_keys
+... paste in contents of ~/.ssh/id_cocalc.pub from host computer ...
+chmod 600 .ssh/authorized_keys
+```
 
 
 ### Make a user an admin
