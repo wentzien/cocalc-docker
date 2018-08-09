@@ -91,6 +91,26 @@ Get a bash shell insider the container, then connect to the database and make a 
 Obviously, you should really make the user you created (with its email address) an admin, not me!
 Refresh your browser, and then you should see an extra admin panel in the lower right of accounts settings; you can also open any project by directly visiting its URL.
 
+### Change a user's password
+
+It's imposible to recover a password, since only a hash of the
+password is stored.  However, you can change any user's password.
+
+Basically, do what it says in the previous section, but use `reset_password` instead of `make_user_admin`:
+
+    $ docker exec -it cocalc bash
+    root@931045eda11f:/# coffee
+    coffee> require 'c'
+    coffee> db.reset_password(email_address:'a@b.c', cb:done())
+    undefined
+    coffee> Password changed for a@b.c
+    Random Password:
+
+                    146dba6b28ba96ee555c7144a43c21f2
+
+That will change the person's password to the big random string; you
+can then email it to them.
+
 #### Account Creation Token
 
 After making your main account an admin as above, search for "Account Creation Token" in the Admin tab. Put some random  string there and other people will not be able to create accounts in your CoCalc container, without knowing that token.
