@@ -1,5 +1,7 @@
 # CoCalc Docker image
 
+[![](https://images.microbadger.com/badges/image/sagemathinc/cocalc.svg)](https://microbadger.com/images/sagemathinc/cocalc "Size and number of layers")
+
 This is a self-contained single-image multi-user CoCalc server.
 
 **STATUS:**
