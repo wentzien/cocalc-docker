@@ -144,6 +144,10 @@ Pkg.init(); \
 Pkg.add("IJulia");' | julia \
  && mv -i "$HOME/.local/share/jupyter/kernels/julia-0.6" "/usr/local/share/jupyter/kernels/"
 
+# Install R Jupyter Kernel package into R itself (so R kernel works)
+RUN echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'httr', 'devtools', 'uuid', 'digest'), repos='http://cran.us.r-project.org'); devtools::install_github('IRkernel/IRkernel')" | sage -R --no-save
+
+
 # Commit to checkout and build.
 ARG commit=HEAD
 
@@ -167,9 +171,6 @@ RUN \
 RUN cd /cocalc/src && sage -pip install --upgrade smc_sagews/
 
 RUN echo "umask 077" >> /etc/bash.bashrc
-
-# Install R Jupyter Kernel package into R itself (so R kernel works)
-RUN echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'httr', 'devtools', 'uuid', 'digest'), repos='http://cran.us.r-project.org'); devtools::install_github('IRkernel/IRkernel')" | sage -R --no-save
 
 # Install some Jupyter kernel definitions
 COPY kernels /usr/local/share/jupyter/kernels
