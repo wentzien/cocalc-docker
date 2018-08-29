@@ -50,7 +50,8 @@ RUN \
        haproxy \
        nginx \
        yapf \
-       rsync
+       rsync \
+       tidy
 
  RUN \
      apt-get update \
