@@ -141,9 +141,9 @@ RUN \
 
 # Install Node.js and LATEST version of npm
 RUN \
-  wget -qO- https://deb.nodesource.com/setup_8.x | bash - && \
-  apt-get install -y nodejs && \
-  /usr/bin/npm install -g npm
+     wget -qO- https://deb.nodesource.com/setup_8.x | bash - \
+  && apt-get install -y nodejs \
+  && /usr/bin/npm install -g npm
 
 # Install Julia
 ARG JULIA=0.6.3
@@ -171,8 +171,8 @@ ARG commit=HEAD
 
 # Pull latest source code for CoCalc and checkout requested commit (or HEAD)
 RUN \
-  git clone https://github.com/sagemathinc/cocalc.git && \
-  cd /cocalc && git pull && git fetch origin && git checkout ${commit:-HEAD}
+     git clone https://github.com/sagemathinc/cocalc.git \
+  && cd /cocalc && git pull && git fetch origin && git checkout ${commit:-HEAD}
 
 # Build and install all deps
 # CRITICAL to install first web, then compute, since compute precompiles all the .js
@@ -195,6 +195,12 @@ COPY kernels /usr/local/share/jupyter/kernels
 
 # Configure so that R kernel actually works -- see https://github.com/IRkernel/IRkernel/issues/388
 COPY kernels/ir/Rprofile.site /usr/local/sage/local/lib/R/etc/Rprofile.site
+
+# Move aside sage environment python3; this is needed for use of python3 from sagews
+RUN \
+     cd /usr/local/sage/local/bin \
+  && mv python3 python3-bkb
+
 
 # Build a UTF-8 locale, so that tmux works -- see https://unix.stackexchange.com/questions/277909/updated-my-arch-linux-server-and-now-i-get-tmux-need-utf-8-locale-lc-ctype-bu
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
