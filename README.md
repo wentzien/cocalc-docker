@@ -21,6 +21,11 @@ NOTES:
  - This Docker image only supports 64-bit Intel.
  - If you get an error about the Docker daemon, instead run `sudo docker ...`.
  - CoCalc will NOT work over insecure port 80.  A previous version of these direction suggested using -p 80:80 above and visiting http://localhost, [which will not work](https://github.com/sagemathinc/cocalc/issues/2000).
+ - If you are using Microsoft Windows, instead make a docker volume and use that for storage (I'm not sure how easy it is though then to backup files):
+    ```
+    docker volume create cocalc-volume
+    docker run --name=cocalc -d -v cocalc-volume:/projects -p 443:443 sagemathinc/cocalc
+    ```
 
 The above command will first download the image, then start CoCalc, storing your data in the directory `~/cocalc` on your computer. If you want to store your worksheets and edit history elsewhere, change `~/cocalc` to something else.  Once your local CoCalc is running, open your web browser to https://localhost.
 
