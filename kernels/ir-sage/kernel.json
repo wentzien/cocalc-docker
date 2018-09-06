@@ -1,11 +1,5 @@
 {
- "language": "r",
- "argv": [
-  "R-sage",
-  "-e",
-  "IRkernel::main()",
-  "--args",
-  "{connection_file}"
- ],
- "display_name": "R (SageMath)"
+  "language": "r",
+  "argv": ["sage", "-R", "-e", "IRkernel::main()", "--args", "{connection_file}"],
+  "display_name": "R (SageMath)"
 }
