@@ -119,7 +119,7 @@ def start_postgres():
         time.sleep(3)
     os.system("sudo -u sage /usr/lib/postgresql/10/bin/postgres -D '%s' > /var/log/postgres.log 2>&1 &"%PGDATA)
     time.sleep(1)
-    os.system("""echo "update projects set state='{\\"state\":\\"opened\\"}';" | psql -t""")
+    os.system("""echo "update projects set state='{\\"state\\":\\"opened\\"}';" | psql -t""")
 
 def start_compute():
     run("mkdir -p /projects/conf && chmod og-rwx -R /projects/conf")
