@@ -1,0 +1,14 @@
+{
+ "display_name": "Python 2 (Ubuntu Linux)",
+ "argv": [
+  "/ext/bin/python2-ubuntu",
+  "-m",
+  "ipykernel",
+  "-c",
+  "%config InlineBackend.figure_formats = set(['retina'])\nimport matplotlib; matplotlib.rcParams['figure.figsize'] = (12, 7)",
+  "--matplotlib=inline",
+  "-f",
+  "{connection_file}"
+ ],
+ "language": "python"
+}

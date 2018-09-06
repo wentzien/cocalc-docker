@@ -83,15 +83,20 @@ RUN \
        libcurl4-openssl-dev \
        graphviz \
        smem \
+       octave \
        python3-yaml \
+       python3-matplotlib \
+       python3-jupyter* \
+       python-matplotlib* \
+       python-jupyter* \
        locales \
        locales-all \
        postgresql \
        postgresql-contrib
 
-# Jupyter from pip (since apt-get jupyter is ancient)
+# The Octave kernel.
 RUN \
-  pip install "ipython<6" jupyter
+  pip install octave_kernel
 
 # Build and install Sage -- see https://github.com/sagemath/docker-images
 COPY scripts/ /tmp/scripts
@@ -193,7 +198,6 @@ COPY kernels/ir/Rprofile.site /usr/local/sage/local/lib/R/etc/Rprofile.site
 
 # Build a UTF-8 locale, so that tmux works -- see https://unix.stackexchange.com/questions/277909/updated-my-arch-linux-server-and-now-i-get-tmux-need-utf-8-locale-lc-ctype-bu
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
-
 
 ### Configuration
 
