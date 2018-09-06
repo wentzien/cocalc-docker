@@ -1,11 +1,11 @@
 {
- "language": "r",
- "argv": [
-  "/usr/local/share/jupyter/kernels/ir/R-sage",
-  "-e",
-  "IRkernel::main()",
-  "--args",
-  "{connection_file}"
- ],
- "display_name": "R"
+  "language": "r",
+  "argv": [
+    "R",
+    "-e",
+    "options(jupyter.plot_mimetypes = c('image/svg+xml')); IRkernel::main()",
+    "--args",
+    "{connection_file}"
+  ],
+  "display_name": "R (R-Project)"
 }
