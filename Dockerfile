@@ -117,6 +117,18 @@ RUN \
   && cp -rv /usr/local/sage/local/share/texmf/tex/latex/sagetex/ /usr/share/texmf/tex/latex/ \
   && texhash
 
+# Install LEAN proof assistant
+RUN \
+     export VERSION=3.4.1 \
+  && mkdir -p /opt/lean \
+  && cd /opt/lean \
+  && wget https://github.com/leanprover/lean/releases/download/v$VERSION/lean-$VERSION-linux.tar.gz \
+  && tar xf lean-$VERSION-linux.tar.gz \
+  && rm lean-$VERSION-linux.tar.gz \
+  && rm -f latest \
+  && ln -s lean-$VERSION-linux latest \
+  && ln -s /opt/lean/latest/bin/lean /usr/local/bin/lean
+
 # Install all aspell dictionaries, so that spell check will work in all languages.  This is
 # used by cocalc's spell checkers (for editors).  This takes about 80MB, which is well worth it.
 RUN \
@@ -160,7 +172,7 @@ RUN \
 # Build and install all deps
 # CRITICAL to install first web, then compute, since compute precompiles all the .js
 # for fast startup, but unfortunately doing so breaks ./install.py all --web, since
-# the .js files laying around somehow mess up cjsx loading. 
+# the .js files laying around somehow mess up cjsx loading.
 RUN \
      cd /cocalc/src \
   && . ./smc-env \
