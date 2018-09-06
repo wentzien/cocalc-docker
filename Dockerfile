@@ -24,6 +24,7 @@ RUN \
        texlive-extra-utils \
        texlive-xetex \
        texlive-luatex \
+       texlive-bibtex-extra \
        liblog-log4perl-perl
 
 RUN \
