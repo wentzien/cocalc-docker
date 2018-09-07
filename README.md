@@ -11,7 +11,7 @@ This is a self-contained single-image multi-user CoCalc server.
 
 ## Instructions
 
-Install Docker on your computer (e.g., `apt-get install docker.io` on Ubuntu).   Make sure you have at least 8GB disk space free, then type
+Install Docker on your computer (e.g., `apt-get install docker.io` on Ubuntu).   Make sure you have at least **10GB disk space free**, then type
 
     docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 sagemathinc/cocalc
 
