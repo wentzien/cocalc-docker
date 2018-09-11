@@ -105,6 +105,10 @@ RUN \
 RUN \
   pip install octave_kernel
 
+# Jupyter Lab
+RUN \
+  pip install jupyterlab
+
 # Build and install Sage -- see https://github.com/sagemath/docker-images
 COPY scripts/ /tmp/scripts
 RUN chmod -R +x /tmp/scripts
