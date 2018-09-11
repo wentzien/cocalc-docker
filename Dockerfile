@@ -90,6 +90,7 @@ RUN \
        python3-jupyter* \
        python-matplotlib* \
        python-jupyter* \
+       jupyter \
        locales \
        locales-all \
        postgresql \
