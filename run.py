@@ -118,8 +118,14 @@ def start_postgres():
         run("sudo -u sage kill %s"%(open(os.path.join(PGDATA, 'postmaster.pid')).read().split()[0]))
         time.sleep(3)
     os.system("sudo -u sage /usr/lib/postgresql/10/bin/postgres -D '%s' > /var/log/postgres.log 2>&1 &"%PGDATA)
-    time.sleep(1)
-    os.system("""echo "update projects set state='{\\"state\\":\\"opened\\"}';" | psql -t""")
+
+def reset_project_state():
+    while True:
+        try:
+            run("""echo "update projects set state='{\\"state\\":\\"opened\\"}';" | psql -t""")
+            return
+        except:
+            time.sleep(1)
 
 def start_compute():
     run("mkdir -p /projects/conf && chmod og-rwx -R /projects/conf")
@@ -139,8 +145,10 @@ def main():
     start_postgres()
     start_hub()
     start_compute()
+    reset_project_state()
     while True:
         os.wait()
 
 if __name__ == "__main__":
     main()
+

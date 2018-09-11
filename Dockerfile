@@ -93,7 +93,10 @@ RUN \
        locales \
        locales-all \
        postgresql \
-       postgresql-contrib
+       postgresql-contrib \
+       clang-format \
+       yapf \
+       yapf3
 
 # The Octave kernel.
 RUN \
