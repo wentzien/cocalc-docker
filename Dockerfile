@@ -96,7 +96,9 @@ RUN \
        postgresql-contrib \
        clang-format \
        yapf \
-       yapf3
+       yapf3 \
+       golang \
+       r-cran-formatr
 
 # The Octave kernel.
 RUN \
