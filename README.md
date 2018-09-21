@@ -106,9 +106,7 @@ chmod 600 .ssh/authorized_keys
 Get a bash shell insider the container, then connect to the database and make a user (me!) an admin as follows:
 
     $ docker exec -it cocalc bash
-    root@931045eda11f:/# coffee
-    coffee> require 'c'
-    coffee> db.make_user_admin(email_address:'wstein@gmail.com', cb:done())
+    root@931045eda11f:/# make-user-admin wstein@gmail.com
 
 Obviously, you should really make the user you created (with its email address) an admin, not me!
 Refresh your browser, and then you should see an extra admin panel in the lower right of accounts settings; you can also open any project by directly visiting its URL.
