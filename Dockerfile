@@ -226,6 +226,26 @@ COPY haproxy.conf /etc/haproxy/haproxy.cfg
 COPY run.py /root/run.py
 COPY bashrc /root/.bashrc
 
+## Xpra backend support
+RUN \
+     apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y xpra xvfb websockify 
+
+## X11 apps to make x11 support useful.
+## Will move this up in Dockerfile once stable.
+RUN \
+     apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps gnome-terminal \
+     vim-gtk curl lyx libreoffice inkscape gimp chromium-browser
+
+RUN \
+     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg \
+  && install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ \
+  && sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list' \
+  && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y apt-transport-https \
+  && sudo apt-get update \
+  && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y code
+
 CMD /root/run.py
 
 EXPOSE 80 443
