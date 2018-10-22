@@ -235,7 +235,7 @@ RUN \
 ## Will move this up in Dockerfile once stable.
 RUN \
      apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps gnome-terminal \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps dbus-x11 gnome-terminal \
      vim-gtk curl lyx libreoffice inkscape gimp chromium-browser
 
 RUN \
