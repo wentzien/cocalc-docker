@@ -236,7 +236,7 @@ RUN \
 RUN \
      apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps dbus-x11 gnome-terminal \
-     vim-gtk curl lyx libreoffice inkscape gimp chromium-browser
+     vim-gtk curl lyx libreoffice inkscape gimp # chromium-browser
 
 RUN \
      curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg \
