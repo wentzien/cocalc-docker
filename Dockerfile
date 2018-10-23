@@ -226,17 +226,22 @@ COPY haproxy.conf /etc/haproxy/haproxy.cfg
 COPY run.py /root/run.py
 COPY bashrc /root/.bashrc
 
-## Xpra backend support
+## Xpra backend support -- we have to use the debs from xpra.org,
+## Since the official distro packages are ancient.
 RUN \
      apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y xpra xvfb websockify 
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb websockify curl \
+  && curl https://xpra.org/gpg.asc | apt-key add - \
+  && echo "deb http://xpra.org/ bionic main" > /etc/apt/sources.list.d/xpra.list \
+  && apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y xpra
 
 ## X11 apps to make x11 support useful.
 ## Will move this up in Dockerfile once stable.
 RUN \
      apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps dbus-x11 gnome-terminal \
-     vim-gtk curl lyx libreoffice inkscape gimp # chromium-browser
+     vim-gtk lyx libreoffice inkscape gimp chromium-browser
 
 RUN \
      curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg \
