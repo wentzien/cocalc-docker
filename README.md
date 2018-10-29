@@ -11,11 +11,11 @@ This is a self-contained single-image multi-user CoCalc server.
 
 ## Instructions
 
-Install Docker on your computer (e.g., `apt-get install docker.io` on Ubuntu).   Make sure you have at least **10GB disk space free**, then type
+Install Docker on your computer (e.g., `apt-get install docker.io` on Ubuntu).   Make sure you have at least **15GB disk space free**, then type
 
     docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 sagemathinc/cocalc
 
-wait a minute, then visit https://localhost.  It is expected that you'll see a "Your connection is not private" warning, since you haven't set up a security certificate.  Click "Show advanced" and "Proceed to localhost (unsafe)".
+wait a few minutes for the image to pull, decompress and the container to start, then visit https://localhost.  It is expected that you'll see a "Your connection is not private" warning, since you haven't set up a security certificate.  Click "Show advanced" and "Proceed to localhost (unsafe)".
 
 NOTES:
  - This Docker image only supports 64-bit Intel.
