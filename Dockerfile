@@ -241,8 +241,10 @@ RUN \
 RUN \
      apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps dbus-x11 gnome-terminal \
-     vim-gtk lyx libreoffice inkscape gimp chromium-browser
+     vim-gtk lyx libreoffice inkscape gimp chromium-browser \
+     xdotool xclip x11-xkb-utils
 
+# Microsoft's VS Code
 RUN \
      curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg \
   && install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ \
