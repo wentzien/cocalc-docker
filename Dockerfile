@@ -241,7 +241,7 @@ RUN \
 RUN \
      apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps dbus-x11 gnome-terminal \
-     vim-gtk lyx libreoffice inkscape gimp chromium-browser \
+     vim-gtk lyx libreoffice inkscape gimp chromium-browser texstudio evince mesa-utils \
      xdotool xclip x11-xkb-utils
 
 # Microsoft's VS Code
@@ -252,6 +252,13 @@ RUN \
   && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y apt-transport-https \
   && sudo apt-get update \
   && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y code
+
+# RStudio
+RUN \
+     apt-get install -y libjpeg62 \
+  && wget -O rstudio.deb https://download1.rstudio.org/rstudio-xenial-1.1.463-amd64.deb \
+  && dpkg -i rstudio.deb \
+  && rm rstudio.deb
 
 CMD /root/run.py
 
