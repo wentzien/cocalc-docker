@@ -4,6 +4,10 @@
 
 This is a self-contained single-image multi-user CoCalc server.
 
+**SUPPORT:**
+  - SageMath, Inc. does not currently offer free or paid support for cocalc-docker.   (If you're seriously interested in paid support, maybe we can work something out -- contact us at help@sagemath.com.)
+  - You may email [the mailing list](https://groups.google.com/forum/?fromgroups#!forum/cocalc) for community support.
+
 **STATUS:**
   - This is _**not blatantly insecure** from outside attack: the database has a long random password, user accounts are separate, encrypted SSL communication is used by default, etc.
   - That said, **a determined user with an account can easily access or change files of other users in the same container!** Use this for personal use, behind a firewall, or with an account creation token, so that only other people you trust create accounts.  Don't make one of these publicly available with important data in it and no account creation token! See [issue 2031]( https://github.com/sagemathinc/cocalc/issues/2031).
