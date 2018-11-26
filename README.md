@@ -147,6 +147,26 @@ docker exec -e COLUMNS="`tput cols`" -e LINES="`tput lines`" -it cocalc bash
 ```
 More information on this issue is in [moby issue 33794](https://github.com/moby/moby/issues/33794).
 
+
+### Installation for SELinux (Fedora, etc.)
+
+In order to build and run CoCalc on an SELinux box, first set SELinux to permissive:
+
+    $ setenforce 0
+
+<Install cocalc>
+
+Tell docker and SELinux to "play nicely":
+
+    $ chcon -Rt svirt_sandbox_file_t cocalc
+
+return SELinux to enabled:
+
+    $ setenforce 1
+
+-- via [discussion](https://groups.google.com/forum/#!msg/cocalc/nhtbraq1_X4/QTlBy3opBAAJ)
+
+
 ## Your data
 
 If you started the container as above, there will be a directory ~/cocalc on your host computer that contains **all** data and files related to your projects and users -- go ahead and verify that it is there before ugrading.   It might look like this:
