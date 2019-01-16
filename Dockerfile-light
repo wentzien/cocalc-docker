@@ -109,30 +109,6 @@ RUN \
 RUN \
   pip install jupyterlab
 
-# Build and install Sage -- see https://github.com/sagemath/docker-images
-COPY scripts/ /tmp/scripts
-RUN chmod -R +x /tmp/scripts
-
-RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-password sage \
-    && chown -R sage:sage /home/sage/
-
-# make source checkout target, then run the install script
-# see https://github.com/docker/docker/issues/9547 for the sync
-#RUN    mkdir -p /usr/local/ \
-#    && /tmp/scripts/install_sage.sh /usr/local/ master \
-#    && sync
-
-# RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
-
-# Install sage scripts system-wide
-# RUN echo "install_scripts('/usr/local/bin/')" | sage
-
-# Install SageTex
-#RUN \
-#     sudo -H -E -u sage sage -p sagetex \
-#  && cp -rv /usr/local/sage/local/share/texmf/tex/latex/sagetex/ /usr/share/texmf/tex/latex/ \
-#  && texhash
-
 # Install LEAN proof assistant
 RUN \
      export VERSION=3.4.1 \
@@ -166,10 +142,6 @@ RUN cd /tmp \
  && mv /opt/julia-* /opt/julia \
  && ln -s /opt/julia/bin/julia /usr/local/bin
 
-# Install R Jupyter Kernel package into R itself (so R kernel works)
-RUN echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'httr', 'devtools', 'uuid', 'digest'), repos='http://cran.us.r-project.org'); devtools::install_github('IRkernel/IRkernel')" | sage -R --no-save
-
-
 # Commit to checkout and build.
 ARG commit=HEAD
 
@@ -189,22 +161,10 @@ RUN \
   && ./install.py all --compute \
   && rm -rf /root/.npm /root/.node-gyp/
 
-# Install code into Sage
-RUN cd /cocalc/src && sage -pip install --upgrade smc_sagews/
-
 RUN echo "umask 077" >> /etc/bash.bashrc
 
 # Install some Jupyter kernel definitions
 COPY kernels /usr/local/share/jupyter/kernels
-
-# Configure so that R kernel actually works -- see https://github.com/IRkernel/IRkernel/issues/388
-COPY kernels/ir/Rprofile.site /usr/local/sage/local/lib/R/etc/Rprofile.site
-
-# Move aside sage environment python3; this is needed for use of python3 from sagews
-RUN \
-     cd /usr/local/sage/local/bin \
-  && mv python3 python3-bkb
-
 
 # Build a UTF-8 locale, so that tmux works -- see https://unix.stackexchange.com/questions/277909/updated-my-arch-linux-server-and-now-i-get-tmux-need-utf-8-locale-lc-ctype-bu
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
@@ -260,6 +220,11 @@ RUN \
   && wget -O rstudio.deb https://download1.rstudio.org/rstudio-xenial-1.1.463-amd64.deb \
   && dpkg -i rstudio.deb \
   && rm rstudio.deb
+
+# User that the database, servers, etc. run under
+RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-password sage \
+    && chown -R sage:sage /home/sage/
+
 
 CMD /root/run.py
 
