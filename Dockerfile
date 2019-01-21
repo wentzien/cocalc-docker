@@ -118,20 +118,20 @@ RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-pa
 
 # make source checkout target, then run the install script
 # see https://github.com/docker/docker/issues/9547 for the sync
-#RUN    mkdir -p /usr/local/ \
-#    && /tmp/scripts/install_sage.sh /usr/local/ master \
-#    && sync
+RUN    mkdir -p /usr/local/ \
+    && /tmp/scripts/install_sage.sh /usr/local/ master \
+    && sync
 
-# RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
+RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
 
 # Install sage scripts system-wide
-# RUN echo "install_scripts('/usr/local/bin/')" | sage
+RUN echo "install_scripts('/usr/local/bin/')" | sage
 
 # Install SageTex
-#RUN \
-#     sudo -H -E -u sage sage -p sagetex \
-#  && cp -rv /usr/local/sage/local/share/texmf/tex/latex/sagetex/ /usr/share/texmf/tex/latex/ \
-#  && texhash
+RUN \
+     sudo -H -E -u sage sage -p sagetex \
+  && cp -rv /usr/local/sage/local/share/texmf/tex/latex/sagetex/ /usr/share/texmf/tex/latex/ \
+  && texhash
 
 # Install LEAN proof assistant
 RUN \
