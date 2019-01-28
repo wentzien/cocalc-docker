@@ -15,7 +15,7 @@ This is a self-contained single-image multi-user CoCalc server.
 
 ## Instructions
 
-Install Docker on your computer (e.g., `apt-get install docker.io` on Ubuntu).   Make sure you have at least **15GB disk space free**, then type
+Install Docker on your computer (e.g., `apt-get install docker.io` on Ubuntu).   Make sure you have at least **15GB disk space free**, then type:
 
     docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 sagemathinc/cocalc
 
@@ -56,19 +56,19 @@ On a laptop running Docker under OS X, the clock will probably get messed up any
 
 ### SSH port forwarding
 
-If you're running this docker image on a remote server and want to use ssh port forwarding to connect, type
+If you're running this docker image on a remote server and want to use ssh port forwarding to connect, type:
 
     ssh -L 8080:localhost:443 username@remote_server
 
 then open your web browser to https://localhost:8080
 
-For **enhanced security**, make the container only listen on localhost
+For **enhanced security**, make the container only listen on localhost:
 
     docker stop cocalc
     docker rm cocalc
     docker run --name=cocalc -d -v ~/cocalc:/projects -p  127.0.0.1:443:443 sagemathinc/cocalc
 
-Then the **only way** to access your CoCalc server is to type the following on your local computer
+Then the **only way** to access your CoCalc server is to type the following on your local computer:
 
     ssh -L 8080:localhost:443 username@remote_server
 
@@ -76,7 +76,7 @@ and open your web browser to https://localhost:8080
 
 ### SSH into a project
 
-Instead of doing
+Instead of doing:
 
     docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 sagemathinc/cocalc
 
@@ -84,11 +84,11 @@ do this:
 
     docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 -p <your ip address>:2222:22  sagemathinc/cocalc
 
-Then you can do
+Then you can do:
 
     ssh projectid@<your ip address> -p 2222
 
-Note that `project_id` is the hex id string for the project *without hyphens*. One way to show project id in this format is to open a .term file in the project and run this command. (This only works in CoCalc in Docker; USER is set differently in production CoCalc.)
+Note that `project_id` is the hex id string for the project *without hyphens*. One way to show project id in this format is to open a .term file in the project and run this command: (This only works in CoCalc in Docker; USER is set differently in production CoCalc.)
 
 ```
 echo $USER
@@ -117,8 +117,7 @@ Refresh your browser, and then you should see an extra admin panel in the lower 
 
 ### Change a user's password
 
-It's imposible to recover a password, since only a hash of the
-password is stored.  However, you can change any user's password.
+It's imposible to recover a password, since only a hash of the password is stored. However, you can change any user's password.
 
 Basically, do what it says in the previous section, but use `reset_password` instead of `make_user_admin`:
 
@@ -132,12 +131,11 @@ Basically, do what it says in the previous section, but use `reset_password` ins
 
                     146dba6b28ba96ee555c7144a43c21f2
 
-That will change the person's password to the big random string; you
-can then email it to them.
+That will change the person's password to the big random string; you can then email it to them.
 
 #### Account Creation Token
 
-After making your main account an admin as above, search for "Account Creation Token" in the Admin tab. Put some random  string there and other people will not be able to create accounts in your CoCalc container, without knowing that token.
+After making your main account an admin as above, search for "Account Creation Token" in the Admin tab. Put some random string there and other people will not be able to create accounts in your CoCalc container, without knowing that token.
 
 ### Terminal Height
 
@@ -169,12 +167,12 @@ return SELinux to enabled:
 
 ## Your data
 
-If you started the container as above, there will be a directory ~/cocalc on your host computer that contains **all** data and files related to your projects and users -- go ahead and verify that it is there before ugrading.   It might look like this:
+If you started the container as above, there will be a directory ~/cocalc on your host computer that contains **all** data and files related to your projects and users -- go ahead and verify that it is there before upgrading. It might look like this:
 
     Williams-MacBook-Pro:~ wstein$ ls cocalc
     be889c14-dc96-4538-989b-4117ffe84148	postgres    conf
 
-The directory `postgres` contains the database files, so all projects, users, file editing history, etc.  The directory conf contains some secrets and log files.  There will also be one directory (like `be889c14-dc96-4538-989b-4117ffe84148`) for each project that is created.
+The directory `postgres` contains the database files, so all projects, users, file editing history, etc. The directory conf contains some secrets and log files. There will also be one directory (like `be889c14-dc96-4538-989b-4117ffe84148`) for each project that is created.
 
 ## Upgrade
 
@@ -183,7 +181,7 @@ To get the newest image, do this (which will take some time):
 
     docker pull  sagemathinc/cocalc
 
-Once done, you can delete and recreate your CoCalc container.  This will not delete any of your project or user data, which you confirmed above is in ~/cocalc.
+Once done, you can delete and recreate your CoCalc container: (This will not delete any of your project or user data, which you confirmed above is in ~/cocalc.)
 
     docker stop cocalc
     docker rm cocalc
@@ -196,21 +194,21 @@ Now visit https://localhost to see your upgraded server.
 
 This section is for CoCalc developers.
 
-Build the image
+Build the image:
 
     make build-full   # or make build
 
-Run the image (to test)
+Run the image (to test):
 
     make run
 
-How I pushed this
+How I pushed this:
 
     docker tag smc:latest sagemathinc/cocalc
     docker login --username=sagemathinc
     docker push  sagemathinc/cocalc
 
-Also to build at a specific commit.
+Also to build at a specific commit:
 
     docker build --build-arg commit=121b564a6b08942849372b9ffdcdddd7194b3e89 -t smc .
 
