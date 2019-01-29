@@ -132,7 +132,7 @@ def start_compute():
     run(". smc-env; compute --host=localhost --single start 1>/var/log/compute.log 2>/var/log/compute.err &", path='/cocalc/src')
     # Sleep to wait for compute server to start and write port/secret *AND* initialize the schema.
     # TODO: should really do this right -- since if the compute-client tries to initialize schema at same, time things get hosed.
-    run("""sleep 15; . smc-env; echo "require('smc-hub/compute-client').compute_server(cb:(e,s)-> s._add_server_single(cb:->process.exit(0)))" | coffee & """, path='/cocalc/src')
+    run("""sleep 15; . smc-env; echo "require('ts-node').register(); require('smc-hub/compute-client').compute_server(cb:(e,s)-> s._add_server_single(cb:->process.exit(0)))" | coffee & """, path='/cocalc/src')
 
 def tail_logs():
     run("tail -f /var/log/compute.log /var/log/compute.err /cocalc/logs/*")
