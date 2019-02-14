@@ -128,7 +128,8 @@ def reset_project_state():
             time.sleep(1)
 
 def start_compute():
-    run("mkdir -p /projects/conf && chmod og-rwx -R /projects/conf")
+    # We always delete compute.sqlite3 (resetting it) since obviously all projects are stopped on container startup.
+    run("mkdir -p /projects/conf && chmod og-rwx -R /projects/conf && rm -f /projects/conf/compute.sqlite3")
     run(". smc-env; compute --host=localhost --single start 1>/var/log/compute.log 2>/var/log/compute.err &", path='/cocalc/src')
     # Sleep to wait for compute server to start and write port/secret *AND* initialize the schema.
     # TODO: should really do this right -- since if the compute-client tries to initialize schema at same, time things get hosed.
