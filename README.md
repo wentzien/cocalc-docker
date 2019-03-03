@@ -2,16 +2,19 @@
 
 [![](https://images.microbadger.com/badges/image/sagemathinc/cocalc.svg)](https://microbadger.com/images/sagemathinc/cocalc "Size and number of layers")
 
-This is a self-contained single-image multi-user CoCalc server.
+**Run CoCalc for free for a small group on your own server!**
 
-**SUPPORT:**
-  - SageMath, Inc. does not currently offer free or paid support for cocalc-docker.   (If you're seriously interested in paid support, maybe we can work something out -- contact us at help@sagemath.com.)
-  - You may email [the mailing list](https://groups.google.com/forum/?fromgroups#!forum/cocalc) for community support.
+This is a free open-source  multiuser CoCalc server that you can _**very easily**_ install on your own computer.
 
-**STATUS:**
-  - This is _**not blatantly insecure** from outside attack: the database has a long random password, user accounts are separate, encrypted SSL communication is used by default, etc.
-  - That said, **a determined user with an account can easily access or change files of other users in the same container!** Use this for personal use, behind a firewall, or with an account creation token, so that only other people you trust create accounts.  Don't make one of these publicly available with important data in it and no account creation token! See [issue 2031]( https://github.com/sagemathinc/cocalc/issues/2031).
-  - See the [open docker-related CoCalc issues](https://github.com/sagemathinc/cocalc/issues?q=is%3Aopen+is%3Aissue+label%3AA-docker), which may include several issues.
+
+**LICENSE AND SUPPORT:**
+  - Much of this code is licensed [under the AGPL](https://en.wikipedia.org/wiki/Affero_General_Public_License). If you would instead like a more company-friendly MIT license instead (or you just want to support CoCalc), please contact [help@cocalc.com](help@cocalc.com), and we will sell you a single-instance 1-year license for $799.  This also includes some support, though with no guarantees (that costs more).
+  - Email [the mailing list](https://groups.google.com/forum/?fromgroups#!forum/cocalc) for community support.
+
+**SECURITY STATUS:**
+  - This is _**not blatantly insecure**_ from outside attack: the database has a long random password, user accounts are separate, encrypted SSL communication is used by default, etc.
+  - That said, **a determined user with an account can easily access or change files of other users in the same container!** Use this for personal use, behind a firewall, or with an account creation token, so that only other people you trust create accounts.  Don't make one of these publicly available with important data in it and no account creation token! See [issue 2031]( https://github.com/sagemathinc/cocalc/issues/2031).  Basically, use this only with people you trust.
+  - See the [open docker-related CoCalc issues](https://github.com/sagemathinc/cocalc/issues?q=is%3Aopen+is%3Aissue+label%3AA-docker).
 
 ## Instructions
 
@@ -35,18 +38,23 @@ The above command will first download the image, then start CoCalc, storing your
 
 The docker container is called `cocalc` and you can refer to the container and use commands like:
 
-    $ docker stop cocalc
-    $ docker start cocalc
+```
+$ docker stop cocalc
+$ docker start cocalc
+```
 
 You can watch the logs:
 
-    $ docker logs cocalc -f
+```
+$ docker logs cocalc -f
+```
 
-However, these logs often don't work.  In that case get a bash shell in the terminal and look at the logs using tail:
+However, these logs sometimes don't work.  In that case get a bash shell in the terminal and look at the logs using tail:
 
-    $ docker exec -it cocalc bash
-    $ tail -f /var/log/hub.log
-
+```
+$ docker exec -it cocalc bash
+$ tail -f /var/log/hub.log
+```
 
 ### Clock skew on OS X
 
@@ -57,16 +65,17 @@ On a laptop running Docker under OS X, the clock will probably get messed up any
 ### SSH port forwarding
 
 If you're running this docker image on a remote server and want to use ssh port forwarding to connect, type:
-
-    ssh -L 8080:localhost:443 username@remote_server
-
+```
+ssh -L 8080:localhost:443 username@remote_server
+```
 then open your web browser to https://localhost:8080
 
 For **enhanced security**, make the container only listen on localhost:
-
-    docker stop cocalc
-    docker rm cocalc
-    docker run --name=cocalc -d -v ~/cocalc:/projects -p  127.0.0.1:443:443 sagemathinc/cocalc
+```
+docker stop cocalc
+docker rm cocalc
+docker run --name=cocalc -d -v ~/cocalc:/projects -p  127.0.0.1:443:443 sagemathinc/cocalc
+```
 
 Then the **only way** to access your CoCalc server is to type the following on your local computer:
 
@@ -77,16 +86,20 @@ and open your web browser to https://localhost:8080
 ### SSH into a project
 
 Instead of doing:
-
-    docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 sagemathinc/cocalc
+```
+docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 sagemathinc/cocalc
+```
 
 do this:
 
-    docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 -p <your ip address>:2222:22  sagemathinc/cocalc
+```
+docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 -p <your ip address>:2222:22  sagemathinc/cocalc
+```
 
 Then you can do:
-
-    ssh projectid@<your ip address> -p 2222
+```
+ssh projectid@<your ip address> -p 2222
+```
 
 Note that `project_id` is the hex id string for the project *without hyphens*. One way to show project id in this format is to open a .term file in the project and run this command: (This only works in CoCalc in Docker; USER is set differently in production CoCalc.)
 
@@ -108,10 +121,10 @@ chmod 600 .ssh/authorized_keys
 ### Make a user an admin
 
 Get a bash shell insider the container, then connect to the database and make a user (me!) an admin as follows:
-
-    $ docker exec -it cocalc bash
-    root@931045eda11f:/# make-user-admin wstein@gmail.com
-
+```
+$ docker exec -it cocalc bash
+root@931045eda11f:/# make-user-admin wstein@gmail.com
+```
 Obviously, you should really make the user you created (with its email address) an admin, not me!
 Refresh your browser, and then you should see an extra admin panel in the lower right of accounts settings; you can also open any project by directly visiting its URL.
 
@@ -120,16 +133,17 @@ Refresh your browser, and then you should see an extra admin panel in the lower 
 It's imposible to recover a password, since only a hash of the password is stored. However, you can change any user's password.
 
 Basically, do what it says in the previous section, but use `reset_password` instead of `make_user_admin`:
+```
+$ docker exec -it cocalc bash
+root@931045eda11f:/# coffee
+coffee> require 'c'
+coffee> db.reset_password(email_address:'a@b.c', cb:done())
+undefined
+coffee> Password changed for a@b.c
+Random Password:
 
-    $ docker exec -it cocalc bash
-    root@931045eda11f:/# coffee
-    coffee> require 'c'
-    coffee> db.reset_password(email_address:'a@b.c', cb:done())
-    undefined
-    coffee> Password changed for a@b.c
-    Random Password:
-
-                    146dba6b28ba96ee555c7144a43c21f2
+                146dba6b28ba96ee555c7144a43c21f2
+```
 
 That will change the person's password to the big random string; you can then email it to them.
 
@@ -140,9 +154,11 @@ After making your main account an admin as above, search for "Account Creation T
 ### Terminal Height
 
 If `docker exec -it cocalc bash` doesn't seem to give you the right terminal height, e.g. content is only displayed in the uppper part of the terminal, this workaround may help when launching bash:
+
 ```
 docker exec -e COLUMNS="`tput cols`" -e LINES="`tput lines`" -it cocalc bash
 ```
+
 More information on this issue is in [moby issue 33794](https://github.com/moby/moby/issues/33794).
 
 
@@ -150,17 +166,22 @@ More information on this issue is in [moby issue 33794](https://github.com/moby/
 
 In order to build and run CoCalc on an SELinux box, first set SELinux to permissive:
 
-    $ setenforce 0
+```
+$ setenforce 0
+```
 
 <Install cocalc>
 
 Tell docker and SELinux to "play nicely":
 
-    $ chcon -Rt svirt_sandbox_file_t cocalc
+```
+$ chcon -Rt svirt_sandbox_file_t cocalc
+```
 
 return SELinux to enabled:
-
-    $ setenforce 1
+```
+$ setenforce 1
+```
 
 -- via [discussion](https://groups.google.com/forum/#!msg/cocalc/nhtbraq1_X4/QTlBy3opBAAJ)
 
@@ -168,9 +189,10 @@ return SELinux to enabled:
 ## Your data
 
 If you started the container as above, there will be a directory ~/cocalc on your host computer that contains **all** data and files related to your projects and users -- go ahead and verify that it is there before upgrading. It might look like this:
-
-    Williams-MacBook-Pro:~ wstein$ ls cocalc
-    be889c14-dc96-4538-989b-4117ffe84148	postgres    conf
+```
+Williams-MacBook-Pro:~ wstein$ ls cocalc
+be889c14-dc96-4538-989b-4117ffe84148	postgres    conf
+```
 
 The directory `postgres` contains the database files, so all projects, users, file editing history, etc. The directory conf contains some secrets and log files. There will also be one directory (like `be889c14-dc96-4538-989b-4117ffe84148`) for each project that is created.
 
@@ -178,8 +200,9 @@ The directory `postgres` contains the database files, so all projects, users, fi
 
 
 To get the newest image, do this (which will take some time):
-
-    docker pull  sagemathinc/cocalc
+```
+docker pull  sagemathinc/cocalc
+```
 
 Once done, you can delete and recreate your CoCalc container: (This will not delete any of your project or user data, which you confirmed above is in ~/cocalc.)
 
@@ -195,22 +218,27 @@ Now visit https://localhost to see your upgraded server.
 This section is for CoCalc developers.
 
 Build the image:
-
-    make build-full   # or make build
+```
+make build-full   # or make build
+```
 
 Run the image (to test):
 
-    make run
+```
+make run
+```
 
 How I pushed this:
-
-    docker tag smc:latest sagemathinc/cocalc
-    docker login --username=sagemathinc
-    docker push  sagemathinc/cocalc
+```
+docker tag smc:latest sagemathinc/cocalc
+docker login --username=sagemathinc
+docker push  sagemathinc/cocalc
+```
 
 Also to build at a specific commit:
-
-    docker build --build-arg commit=121b564a6b08942849372b9ffdcdddd7194b3e89 -t smc .
+```
+docker build --build-arg commit=121b564a6b08942849372b9ffdcdddd7194b3e89 -t smc .
+```
 
 ## Links
 
