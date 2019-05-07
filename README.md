@@ -132,10 +132,10 @@ Refresh your browser, and then you should see an extra admin panel in the lower 
 
 Sign in as a user that is an admin (see the previous section above).  Click on the Admin tab at the top, search for the user, and then click the "Password" toggle, and click "Request Password Reset Link...".
 
-This does NOT set the password.  It just makes a password reset link, which you send your user via some communications channel that works.  This is important for:
+This does NOT set the password.  It just makes a password reset link, which you send your user via some communications channel that works.  You may need this because:
 
-- You have no email setup.  Yes, it is possible to setup Sendgrid so your docker image sends out email, but we haven't documented that yet...
-- Even if you have email setup, it sometimes works for users with aggressive spam filtering.
+- You do not have email setup.  It is possible to setup Sendgrid so your cocalc-docker image sends out email, but we haven't documented that yet...
+- You have email setup, but it sometimes fails for users with aggressive spam filtering.
 
 #### Account Creation Token
 
