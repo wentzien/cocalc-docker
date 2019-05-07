@@ -128,24 +128,14 @@ root@931045eda11f:/# make-user-admin wstein@gmail.com
 Obviously, you should really make the user you created (with its email address) an admin, not me!
 Refresh your browser, and then you should see an extra admin panel in the lower right of accounts settings; you can also open any project by directly visiting its URL.
 
-### Change a user's password
+### Reset a user's password
 
-It's imposible to recover a password, since only a hash of the password is stored. However, you can change any user's password.
+Sign in as a user that is an admin (see the previous section above).  Click on the Admin tab at the top, search for the user, and then click the "Password" toggle, and click "Request Password Reset Link...".
 
-Basically, do what it says in the previous section, but use `reset_password` instead of `make_user_admin`:
-```
-$ docker exec -it cocalc bash
-root@931045eda11f:/# coffee
-coffee> require 'c'
-coffee> db.reset_password(email_address:'a@b.c', cb:done())
-undefined
-coffee> Password changed for a@b.c
-Random Password:
+This does NOT set the password.  It just makes a password reset link, which you send your user via some communications channel that works.  You may need this because:
 
-                146dba6b28ba96ee555c7144a43c21f2
-```
-
-That will change the person's password to the big random string; you can then email it to them.
+- You do not have email setup.  It is possible to setup Sendgrid so your cocalc-docker image sends out email, but we haven't documented that yet...
+- You have email setup, but it sometimes fails for users with aggressive spam filtering.
 
 #### Account Creation Token
 
