@@ -90,6 +90,9 @@ RUN \
        python3-jupyter* \
        python-matplotlib* \
        python-jupyter* \
+       python-ipywidgets \
+       python-ipywidgets-doc \
+       python3-ipywidgets \
        jupyter \
        locales \
        locales-all \
