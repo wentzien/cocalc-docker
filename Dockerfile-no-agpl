@@ -94,6 +94,9 @@ RUN \
        python3-jupyter* \
        python-matplotlib* \
        python-jupyter* \
+       python-ipywidgets \
+       python-ipywidgets-doc \
+       python3-ipywidgets \
        jupyter \
        locales \
        locales-all \
@@ -247,6 +250,13 @@ RUN \
      apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps dbus-x11  \
      xdotool xclip x11-xkb-utils
+
+# CoCalc Jupyter widgets
+RUN \
+  pip install --no-cache-dir ipyleaflet
+
+RUN \
+  pip3 install --no-cache-dir ipyleaflet
 
 CMD /root/run.py
 
