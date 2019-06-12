@@ -264,6 +264,13 @@ RUN \
   && dpkg -i rstudio.deb \
   && rm rstudio.deb
 
+# CoCalc Jupyter widgets
+RUN \
+  pip install --no-cache-dir ipyleaflet
+
+RUN \
+  pip3 install --no-cache-dir ipyleaflet
+
 CMD /root/run.py
 
 EXPOSE 80 443

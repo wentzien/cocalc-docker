@@ -56,10 +56,48 @@ $ docker exec -it cocalc bash
 $ tail -f /var/log/hub.log
 ```
 
-### Clock skew on OS X
+### OS X -- Clock skew
 
 It is **critical** that the Docker container have the correct time, since CoCalc assumes that the server has the correct time.
-On a laptop running Docker under OS X, the clock will probably get messed up any time you suspend/resume your laptop.  This workaround might work for you: https://github.com/arunvelsriram/docker-time-sync-agent/.
+On a laptop running Docker under OS X, the clock may get messed up any time you suspend/resume your laptop.  This workaround might work for you: https://github.com/arunvelsriram/docker-time-sync-agent/.
+
+### Chromebook -- yes, it totally works
+
+You can run CoCalc locally on your Chromebook as long as it supports Crostini Linux.
+
+
+1.  Install (Crostini) Linux support -- search for Linux in settings and enable.
+1.  In the Linux terminal, type 
+    ```
+    sudo su
+    
+    apt-get update && apt-get upgrade && apt-get install tmux dpkg-dev
+    ```
+1.  Install Docker [as here](https://docs.docker.com/install/linux/docker-ce/debian/#set-up-the-repository):
+    ```
+    sudo su
+
+     apt-get install -y \
+     apt-transport-https \
+     ca-certificates \
+     curl \
+     gnupg2 \
+     software-properties-common &&  \
+    curl -fsSL https://download.docker.com/linux/debian/gpg |  apt-key add - && \
+     apt-key fingerprint 0EBFCD88  && \
+     add-apt-repository \
+     "deb [arch=amd64] https://download.docker.com/linux/debian \
+     $(lsb_release -cs) \
+     stable" && \
+     apt-get update  && apt-get install -y docker-ce
+
+    ```
+1.  Install cocalc-docker:
+    ```
+    sudo docker run --name=cocalc -d -v /cocalc:/projects -p 443:443 -p 80:80 sagemathinc/cocalc
+    ```
+    Type `/sbin/ifconfig eth0|grep inet` in the terminal, and use whatever ip address is listed there -- e.g., for me it was https://100.115.92.198/
+
 
 
 ### SSH port forwarding
