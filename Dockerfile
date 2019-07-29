@@ -274,4 +274,7 @@ RUN \
 
 CMD /root/run.py
 
+ARG BUILD_DATE
+LABEL org.label-schema.build-date=$BUILD_DATE
+
 EXPOSE 80 443

@@ -8,6 +8,9 @@ MAINTAINER William Stein <wstein@sagemath.com>
 
 USER root
 
+ARG BUILD_DATE
+LABEL org.label-schema.build-date=$BUILD_DATE
+
 # See https://github.com/sagemathinc/cocalc/issues/921
 ENV LC_ALL C.UTF-8
 ENV LANG en_US.UTF-8
