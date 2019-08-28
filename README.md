@@ -240,6 +240,25 @@ Once done, you can delete and recreate your CoCalc container: (This will not del
 
 Now visit https://localhost to see your upgraded server.
 
+## Adding custom software to your CoCalc instance
+
+The CoCalc Docker images at Docker Hub contain a subset of all the software in at [cocalc.com](https://cocalc.com). At present, the images are about 12 GB while the cloud service has hundreds of GB of packages and libraries.
+
+Suppose you'd like to add software to your local CoCalc instance after installing and starting the Docker container. Here's an example of how to add an install of [texlive-full](https://packages.ubuntu.com/bionic/texlive-full), in case you need more than the minimal `texlive` installation in the published image:
+
+The Docker image is Ubuntu 18.04. You can do
+
+    sudo docker exec -it [container name] bash
+
+to become root in the container, then do
+
+    apt-get install texlive-full
+
+to install the package.
+
+Note that the `texlive-full` package is over 3 GB. So you will need the additional disk space to install it, and it could take several minutes to over an hour to install, depending on your connection to the internet and the speed of your computer.
+
+Whenever you upgrade your CoCalc image from Docker Hub as described in **Upgrade** above, you will need to repeat the above steps.
 
 ## Build
 
