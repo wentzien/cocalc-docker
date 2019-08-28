@@ -258,7 +258,11 @@ to install the package.
 
 Note that the `texlive-full` package is over 3 GB. So you will need the additional disk space to install it, and it could take several minutes to over an hour to install, depending on your connection to the internet and the speed of your computer.
 
-Whenever you upgrade your CoCalc image from Docker Hub as described in **Upgrade** above, you will need to repeat the above steps.
+Additional notes:
+
+* You may need to type `umask 022` first if you install anything using a method other than apt-get to ensure that permissions are set properly.
+* Most instructions for adding packages to Ubuntu 18.04 should work for CoCalc-Docker, for example `pip install` for Python 2 packages, and `pip3 install` for Python 3 packages.
+* Whenever you upgrade your CoCalc image from Docker Hub as described in **Upgrade** above, you will need to repeat the above steps.
 
 ## Build
 
