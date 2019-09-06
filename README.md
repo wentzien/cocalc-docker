@@ -8,7 +8,7 @@ This is a free open-source  multiuser CoCalc server that you can _**very easily*
 
 
 **LICENSE AND SUPPORT:**
-  - Much of this code is licensed [under the AGPL](https://en.wikipedia.org/wiki/Affero_General_Public_License). If you would instead like a more company-friendly MIT license instead (or you just want to support CoCalc), please contact [help@cocalc.com](help@cocalc.com), and we will sell you a single-instance 1-year license for $799.  This also includes some support, though with no guarantees (that costs more).
+  - Much of this code is licensed [under the AGPL](https://en.wikipedia.org/wiki/Affero_General_Public_License). If you would instead like a business-friendly MIT license instead, please contact [help@cocalc.com](help@cocalc.com), and we will sell you a 1-year license for $799.  This also includes some support, though with no guarantees (that costs more).  We **do** have several happy paying customers as of Sept 2019.
   - Email [the mailing list](https://groups.google.com/forum/?fromgroups#!forum/cocalc) for community support.
 
 **SECURITY STATUS:**
@@ -33,6 +33,7 @@ NOTES:
     docker volume create cocalc-volume
     docker run --name=cocalc -d -v cocalc-volume:/projects -p 443:443 sagemathinc/cocalc
     ```
+  - IMPORTANT: If you are deploying CoCalc for use over the web (so not just on localhost), it is probably necessary to obtain a **valid security certificate** instead of using the self-signed unsafe one that is in your Docker container.    See [this discussion](https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!msg/cocalc/7QO1hJQQGYY/Zsev1G72AAAJ).
 
 The above command will first download the image, then start CoCalc, storing your data in the directory `~/cocalc` on your computer. If you want to store your worksheets and edit history elsewhere, change `~/cocalc` to something else.  Once your local CoCalc is running, open your web browser to https://localhost.
 
