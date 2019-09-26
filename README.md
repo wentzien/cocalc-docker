@@ -261,7 +261,7 @@ Note that the `texlive-full` package is over 3 GB. So you will need the addition
 
 Additional notes:
 
-* You may need to type `umask 022` first if you install anything using a method other than apt-get to ensure that permissions are set properly.
+* **Be sure to type `umask 022` first** before you install software if you are using a method other than `apt-get`. This step is needed to ensure that permissions are set properly. The default umask is 007. If you use `pip3` or `pip2` without setting the umask to 022, the package gets installed, but it is not *visible* to normal users as a result.
 * Most instructions for adding packages to Ubuntu 18.04 should work for CoCalc-Docker, for example `pip install` for Python 2 packages, and `pip3 install` for Python 3 packages.
 * Whenever you upgrade your CoCalc image from Docker Hub as described in **Upgrade** above, you will need to repeat the above steps.
 
