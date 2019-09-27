@@ -8,7 +8,7 @@ This is a free open-source  multiuser CoCalc server that you can _**very easily*
 
 
 **LICENSE AND SUPPORT:**
-  - Much of this code is licensed [under the AGPL](https://en.wikipedia.org/wiki/Affero_General_Public_License). If you would instead like a more company-friendly MIT license instead (or you just want to support CoCalc), please contact [help@cocalc.com](help@cocalc.com), and we will sell you a single-instance 1-year license for $799.  This also includes some support, though with no guarantees (that costs more).
+  - Much of this code is licensed [under the AGPL](https://en.wikipedia.org/wiki/Affero_General_Public_License). If you would instead like a business-friendly MIT license instead, please contact [help@cocalc.com](help@cocalc.com), and we will sell you a 1-year license for $799.  This also includes some support, though with no guarantees (that costs more).  We **do** have several happy paying customers as of Sept 2019.
   - Email [the mailing list](https://groups.google.com/forum/?fromgroups#!forum/cocalc) for community support.
 
 **SECURITY STATUS:**
@@ -33,6 +33,7 @@ NOTES:
     docker volume create cocalc-volume
     docker run --name=cocalc -d -v cocalc-volume:/projects -p 443:443 sagemathinc/cocalc
     ```
+  - IMPORTANT: If you are deploying CoCalc for use over the web (so not just on localhost), it is probably necessary to obtain a **valid security certificate** instead of using the self-signed unsafe one that is in your Docker container.    See [this discussion](https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!msg/cocalc/7QO1hJQQGYY/Zsev1G72AAAJ).
 
 The above command will first download the image, then start CoCalc, storing your data in the directory `~/cocalc` on your computer. If you want to store your worksheets and edit history elsewhere, change `~/cocalc` to something else.  Once your local CoCalc is running, open your web browser to https://localhost.
 
@@ -240,6 +241,29 @@ Once done, you can delete and recreate your CoCalc container: (This will not del
 
 Now visit https://localhost to see your upgraded server.
 
+## Adding custom software to your CoCalc instance
+
+The CoCalc Docker images at Docker Hub contain a subset of all the software in at [cocalc.com](https://cocalc.com). At present, the images are about 12 GB while the cloud service has hundreds of GB of packages and libraries.
+
+Suppose you'd like to add software to your local CoCalc instance after installing and starting the Docker container. Here's an example of how to add an install of [texlive-full](https://packages.ubuntu.com/bionic/texlive-full), in case you need more than the minimal `texlive` installation in the published image:
+
+The Docker image is Ubuntu 18.04. You can do
+
+    sudo docker exec -it [container name] bash
+
+to become root in the container, then do
+
+    apt-get install texlive-full
+
+to install the package.
+
+Note that the `texlive-full` package is over 3 GB. So you will need the additional disk space to install it, and it could take several minutes to over an hour to install, depending on your connection to the internet and the speed of your computer.
+
+Additional notes:
+
+* **Be sure to type `umask 022` first** before you install software if you are using a method other than `apt-get`. This step is needed to ensure that permissions are set properly. The default umask is 007. If you use `pip3` or `pip2` without setting the umask to 022, the package gets installed, but it is not *visible* to normal users as a result.
+* Most instructions for adding packages to Ubuntu 18.04 should work for CoCalc-Docker, for example `pip install` for Python 2 packages, and `pip3 install` for Python 3 packages.
+* Whenever you upgrade your CoCalc image from Docker Hub as described in **Upgrade** above, you will need to repeat the above steps.
 
 ## Build
 

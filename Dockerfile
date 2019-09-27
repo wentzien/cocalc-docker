@@ -157,7 +157,7 @@ RUN \
 # Install Node.js and LATEST version of npm
 RUN \
      wget -qO- https://deb.nodesource.com/setup_8.x | bash - \
-  && apt-get install -y nodejs \
+  && apt-get install -y nodejs libxml2-dev libxslt-dev \
   && /usr/bin/npm install -g npm
 
 # Install Julia
@@ -171,6 +171,7 @@ RUN cd /tmp \
 
 # Install R Jupyter Kernel package into R itself (so R kernel works)
 RUN echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'httr', 'devtools', 'uuid', 'digest'), repos='http://cran.us.r-project.org'); devtools::install_github('IRkernel/IRkernel')" | sage -R --no-save
+RUN echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'httr', 'devtools', 'uuid', 'digest'), repos='http://cran.us.r-project.org'); devtools::install_github('IRkernel/IRkernel')" | R --no-save
 
 
 # Commit to checkout and build.
@@ -272,5 +273,8 @@ RUN \
   pip3 install --no-cache-dir ipyleaflet
 
 CMD /root/run.py
+
+ARG BUILD_DATE
+LABEL org.label-schema.build-date=$BUILD_DATE
 
 EXPOSE 80 443
