@@ -93,6 +93,8 @@ def start_hub():
             --host=localhost \
             --port 5000 \
             --proxy_port 5001 \
+            --share_port 5002 \
+            --share_path='/projects/[project_id]' \
             --update \
             --single \
             --logfile /var/log/hub.log \
