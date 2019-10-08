@@ -27,7 +27,7 @@ wait a few minutes for the image to pull, decompress and the container to start,
 NOTES:
  - This Docker image only supports 64-bit Intel.
  - If you get an error about the Docker daemon, instead run `sudo docker ...`.
- - CoCalc will NOT work over insecure port 80.  A previous version of these direction suggested using -p 80:80 above and visiting http://localhost, [which will not work](https://github.com/sagemathinc/cocalc/issues/2000).
+ - CoCalc will NOT work over insecure port 80.  A previous version of these directions suggested using -p 80:80 above and visiting http://localhost, [which will not work](https://github.com/sagemathinc/cocalc/issues/2000).
  - If you are using Microsoft Windows, instead make a docker volume and use that for storage (I'm not sure how easy it is though then to backup files):
     ```
     docker volume create cocalc-volume
