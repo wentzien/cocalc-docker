@@ -168,9 +168,9 @@ RUN \
   && /usr/bin/npm install -g npm
 
 # Install Julia
-ARG JULIA=0.6.3
+ARG JULIA=1.2.0
 RUN cd /tmp \
- && wget https://julialang-s3.julialang.org/bin/linux/x64/0.6/julia-${JULIA}-linux-x86_64.tar.gz \
+ && wget https://julialang-s3.julialang.org/bin/linux/x64/${JULIA%.*}/julia-${JULIA}-linux-x86_64.tar.gz \
  && tar xf julia-${JULIA}-linux-x86_64.tar.gz -C /opt \
  && rm  -f julia-${JULIA}-linux-x86_64.tar.gz \
  && mv /opt/julia-* /opt/julia \
