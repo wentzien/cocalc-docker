@@ -1,4 +1,4 @@
-set -v
+set -x
 sudo docker stop cocalc-test
 sudo docker rm cocalc-test
 set -e

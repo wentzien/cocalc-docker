@@ -1,4 +1,4 @@
-set -v
+set -x
 sudo docker stop cocalc-no-agpl-test
 sudo docker rm cocalc-no-agpl-test
 set -e
