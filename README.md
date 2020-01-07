@@ -23,20 +23,20 @@ Install Docker on your computer (e.g., `apt-get install docker.io` on Ubuntu).  
 
     docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 sagemathinc/cocalc
 
-wait a few minutes for the image to pull, decompress and the container to start, then visit https://localhost.  It is expected that you'll see a "Your connection is not private" warning, since you haven't set up a security certificate.  Click "Show advanced" and "Proceed to localhost (unsafe)".
+wait a few minutes for the image to pull, decompress and the container to start, then visit https://localhost.  (If you are using Microsoft Windows, instead open https://host.docker.internal/.) It is expected that you'll see a "Your connection is not private" warning, since you haven't set up a security certificate.  Click "Show advanced" and "Proceed to localhost (unsafe)".
 
 NOTES:
  - This Docker image only supports 64-bit Intel.
  - If you get an error about the Docker daemon, instead run `sudo docker ...`.
  - CoCalc will NOT work over insecure port 80.  A previous version of these directions suggested using -p 80:80 above and visiting http://localhost, [which will not work](https://github.com/sagemathinc/cocalc/issues/2000).
- - If you are using Microsoft Windows, instead make a docker volume and use that for storage (I'm not sure how easy it is though then to backup files):
+ - If you are using Microsoft Windows, instead make a docker volume and use that for storage:
     ```
     docker volume create cocalc-volume
     docker run --name=cocalc -d -v cocalc-volume:/projects -p 443:443 sagemathinc/cocalc
     ```
   - IMPORTANT: If you are deploying CoCalc for use over the web (so not just on localhost), it is probably necessary to obtain a **valid security certificate** instead of using the self-signed unsafe one that is in your Docker container.    See [this discussion](https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!msg/cocalc/7QO1hJQQGYY/Zsev1G72AAAJ).
 
-The above command will first download the image, then start CoCalc, storing your data in the directory `~/cocalc` on your computer. If you want to store your worksheets and edit history elsewhere, change `~/cocalc` to something else.  Once your local CoCalc is running, open your web browser to https://localhost.
+The above command will first download the image, then start CoCalc, storing your data in the directory `~/cocalc` on your computer. If you want to store your worksheets and edit history elsewhere, change `~/cocalc` to something else.  Once your local CoCalc is running, open your web browser to https://localhost.  (If you are using Microsoft Windows, instead open https://host.docker.internal/.)
 
 The docker container is called `cocalc` and you can refer to the container and use commands like:
 
