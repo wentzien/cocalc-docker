@@ -121,8 +121,13 @@ RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-pa
 
 # make source checkout target, then run the install script
 # see https://github.com/docker/docker/issues/9547 for the sync
+# NOTE: there is probably a ton of work to get our setup
+# to work with sage-9.0, due to the switch to python3.
+# It definitely doesn't work at all now, including both
+# jupyter kernels and sage worksheets.
+# See  https://github.com/sagemathinc/cocalc-docker/issues/65
 RUN    mkdir -p /usr/local/ \
-    && /tmp/scripts/install_sage.sh /usr/local/ master \
+    && /tmp/scripts/install_sage.sh /usr/local/ 8.9 \
     && sync
 
 RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
