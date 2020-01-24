@@ -193,8 +193,12 @@ RUN \
   && ./install.py all --compute \
   && rm -rf /root/.npm /root/.node-gyp/
 
+# Some code tries to read this and it has the wrong permissions, so fix that. It's just empty anyways.
+RUN chmod a+r /cocalc/src/data/base_url
+
 # Install code into Sage
 RUN cd /cocalc/src && sage -pip install --upgrade smc_sagews/
+
 
 RUN echo "umask 077" >> /etc/bash.bashrc
 
