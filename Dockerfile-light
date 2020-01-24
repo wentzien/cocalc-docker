@@ -164,6 +164,9 @@ RUN \
   && ./install.py all --compute \
   && rm -rf /root/.npm /root/.node-gyp/
 
+# Some code tries to read this and it has the wrong permissions, so fix that. It's just empty anyways.
+RUN chmod a+r /cocalc/src/data/base_url
+
 RUN echo "umask 077" >> /etc/bash.bashrc
 
 # Install some Jupyter kernel definitions
