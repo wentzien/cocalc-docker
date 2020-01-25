@@ -4,7 +4,7 @@
 
 **Run CoCalc for free for a small group on your own server!**
 
-This is a free open-source  multiuser CoCalc server that you can _**very easily**_ install on your own computer.
+This is a free open-source  multiuser CoCalc server that you can _**very easily**_ install on your own computer or server using Docker.  If you need something to install on a cluster of servers using Kubernetes, see [cocalc-kubernetes](https://github.com/sagemathinc/cocalc-kubernetes).
 
 
 **LICENSE AND SUPPORT:**
