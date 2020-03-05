@@ -135,7 +135,11 @@ RUN    mkdir -p /usr/local/ \
 RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
 
 # See https://github.com/sagemathinc/cocalc-docker/issues/69
-RUN chmod a+rx /usr/local/sage/local/share/jmol
+# Somewhat fragile below, but I really don't get why the first line
+# isn't enough.
+RUN    chmod a+rx /usr/local/sage/local/share/jmol \
+    && chmod a+r -R /usr/local/sage/local/share/jmol \
+    && chmod a+rx /usr/local/sage/local/share/jmol/applet*
 
 # Install sage scripts system-wide
 RUN echo "install_scripts('/usr/local/bin/')" | sage
