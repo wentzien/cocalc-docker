@@ -170,7 +170,7 @@ RUN \
 
 # Install Node.js and LATEST version of npm
 RUN \
-     wget -qO- https://deb.nodesource.com/setup_8.x | bash - \
+     wget -qO- https://deb.nodesource.com/setup_10.x | bash - \
   && apt-get install -y nodejs libxml2-dev libxslt-dev \
   && /usr/bin/npm install -g npm
 
