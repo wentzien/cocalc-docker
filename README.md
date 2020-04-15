@@ -8,7 +8,7 @@ This is a free open-source  multiuser CoCalc server that you can _**very easily*
 
 
 **LICENSE AND SUPPORT:**
-  - Much of this code is licensed [under the AGPL](https://en.wikipedia.org/wiki/Affero_General_Public_License). If you would instead like a business-friendly MIT license instead, please contact [help@cocalc.com](help@cocalc.com), and we will sell you a 1-year license for $799.  This also includes some support, though with no guarantees (that costs more).  We **do** have several happy paying customers as of Sept 2019.
+  - Much of this code is licensed [under the AGPL](https://en.wikipedia.org/wiki/Affero_General_Public_License) condition to the [commons clause](https://commonsclause.com/) exception. If you would instead like a business-friendly MIT license instead, please contact [help@cocalc.com](help@cocalc.com), and we will sell you a 1-year license for $799.  This also includes some support, though with no guarantees (that costs more).  We **do** have several happy paying customers as of Sept 2019.
   - Join the [CoCalc Docker mailing list](https://groups.google.com/a/sagemath.com/group/cocalc-docker/subscribe) for news, updates and more.
   - [CoCalc mailing list](https://groups.google.com/forum/?fromgroups#!forum/cocalc) for general community support.
 
