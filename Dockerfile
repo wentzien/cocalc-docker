@@ -130,7 +130,7 @@ RUN \
 # Build and install all deps
 # CRITICAL to install first web, then compute, since compute precompiles all the .js
 # for fast startup, but unfortunately doing so breaks ./install.py all --web, since
-# the .js files laying around somehow mess up cjsx loading. 
+# the .js files laying around somehow mess up cjsx loading.
 RUN \
      cd /cocalc/src \
   && . ./smc-env \
