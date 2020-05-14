@@ -245,22 +245,6 @@ RUN \
      vim-gtk lyx libreoffice inkscape gimp chromium-browser texstudio evince mesa-utils \
      xdotool xclip x11-xkb-utils
 
-# Microsoft's VS Code
-RUN \
-     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg \
-  && install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/ \
-  && sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list' \
-  && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y apt-transport-https \
-  && sudo apt-get update \
-  && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y code
-
-# RStudio
-RUN \
-     apt-get install -y libjpeg62 \
-  && wget -O rstudio.deb https://download1.rstudio.org/rstudio-xenial-1.1.463-amd64.deb \
-  && dpkg -i rstudio.deb \
-  && rm rstudio.deb
-
 # CoCalc Jupyter widgets
 RUN \
   pip install --no-cache-dir ipyleaflet
