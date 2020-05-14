@@ -206,12 +206,6 @@ COPY kernels /usr/local/share/jupyter/kernels
 # Configure so that R kernel actually works -- see https://github.com/IRkernel/IRkernel/issues/388
 COPY kernels/ir/Rprofile.site /usr/local/sage/local/lib/R/etc/Rprofile.site
 
-# Move aside sage environment python3; this is needed for use of python3 from sagews
-RUN \
-     cd /usr/local/sage/local/bin \
-  && mv python3 python3-bkb
-
-
 # Build a UTF-8 locale, so that tmux works -- see https://unix.stackexchange.com/questions/277909/updated-my-arch-linux-server-and-now-i-get-tmux-need-utf-8-locale-lc-ctype-bu
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 

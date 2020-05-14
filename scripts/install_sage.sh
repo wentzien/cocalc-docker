@@ -33,11 +33,6 @@ make || true
 rm "$SAGE_SRC_TARGET"/sage/local/lib/libgmp*.a
 make
 
-# Workaround that sage-9.0 seems fundamentally broken due to not installing "python3". 
-# This is really weird.  Remove this when/if a release fixes this.
-cd "$SAGE_SRC_TARGET"/sage/local/bin
-ln -sf python3.7 python3
-
 # Clean up artifacts from the sage build that we don't need for runtime or
 # running the tests
 #
