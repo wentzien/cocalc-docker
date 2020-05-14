@@ -104,14 +104,6 @@ RUN \
        golang \
        r-cran-formatr
 
-# The Octave kernel.
-RUN \
-  pip install octave_kernel
-
-# Jupyter Lab
-RUN \
-  pip install jupyterlab
-
 # Build and install Sage -- see https://github.com/sagemath/docker-images
 COPY scripts/ /tmp/scripts
 RUN chmod -R +x /tmp/scripts
@@ -121,32 +113,30 @@ RUN    adduser --quiet --shell /bin/bash --gecos "Sage user,101,," --disabled-pa
 
 # make source checkout target, then run the install script
 # see https://github.com/docker/docker/issues/9547 for the sync
-# NOTE: there is probably a ton of work to get our setup
-# to work with sage-9.0, due to the switch to python3.
-# It definitely doesn't work at all now, including both
-# jupyter kernels and sage worksheets.
-# See  https://github.com/sagemathinc/cocalc-docker/issues/65
-RUN    mkdir -p /usr/local/ \
-    && /tmp/scripts/install_sage.sh /usr/local/ 8.9 \
+# Sage can't be built as root, for reasons...
+# Here -E inherits the environment from root, however it's important to
+# include -H to set HOME=/home/sage, otherwise DOT_SAGE will not be set
+# correctly and the build will fail!
+RUN    mkdir -p /usr/local/sage \
+    && chown -R sage:sage /usr/local/sage \
+    && sudo -H -E -u sage /tmp/scripts/install_sage.sh /usr/local/ master \
     && sync
 
-RUN /tmp/scripts/post_install_sage.sh && rm -rf /tmp/* && sync
-
-# See https://github.com/sagemathinc/cocalc-docker/issues/69
-# Somewhat fragile below, but I really don't get why the first line
-# isn't enough.
-RUN    chmod a+rx /usr/local/sage/local/share/jmol \
-    && chmod a+r -R /usr/local/sage/local/share/jmol \
-    && chmod a+rx /usr/local/sage/local/share/jmol/applet*
-
-# Install sage scripts system-wide
-RUN echo "install_scripts('/usr/local/bin/')" | sage
+RUN /tmp/scripts/post_install_sage.sh /usr/local/ && rm -rf /tmp/* && sync
 
 # Install SageTex
 RUN \
      sudo -H -E -u sage sage -p sagetex \
   && cp -rv /usr/local/sage/local/share/texmf/tex/latex/sagetex/ /usr/share/texmf/tex/latex/ \
   && texhash
+
+# The Octave kernel.
+RUN \
+  pip install octave_kernel
+
+# Jupyter Lab
+RUN \
+  pip install jupyterlab
 
 # Install LEAN proof assistant
 RUN \

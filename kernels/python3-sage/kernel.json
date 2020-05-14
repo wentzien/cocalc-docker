@@ -1,5 +1,5 @@
 {
-  "display_name": "Python 2 (SageMath)",
+  "display_name": "Python 3 (SageMath)",
   "argv": [
     "sage",
     "--python",
