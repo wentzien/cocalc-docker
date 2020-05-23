@@ -58,6 +58,39 @@ $ docker exec -it cocalc bash
 $ tail -f /var/log/hub.log
 ```
 
+### Installing behind an Nginx Reverse Proxy
+
+If you're running multiple sites from a single server using an Nginx reverse proxy, a setup like the following could be useful.
+
+Instead of mapping port 443 on the container to 443 on the host, map 443 on the container to an arbitray unused port on the host, e.g. 9090:
+
+    docker run --name=cocalc -d -v ~/cocalc:/projects -p 9090:443 sagemathinc/cocalc
+
+In your nginx `sites-available` folder, create a file like the following called e.g. `mycocalc`:
+
+```
+server {
+    server_name mycocalc.com;
+
+    location / {
+        include proxy_params;
+        # push traffic through the proxy to the port you mapped above, in this case 9090, on the localhost:
+        proxy_pass https://localhost:9090/;
+
+        # this enables proxying for websockets, which cocalc uses extensively:
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $host;
+    }
+    listen 443 ssl;
+}
+```
+
+And soft-link it to your `sites-enabled` folder, e.g. `sudo ln -s /etc/nginx/sites-available/mycocalc /etc/nginx/sites-enabled/mycocalc`
+
+If you're using certbot and letsencrypt, you can then get a certificate for your domain using something like `sudo certbot --nginx` and selecting "mycocalc.com", which will automatically set up an ssl cert and modify your nginx server file.
+
 ### OS X -- Clock skew
 
 It is **critical** that the Docker container have the correct time, since CoCalc assumes that the server has the correct time.
