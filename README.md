@@ -331,8 +331,10 @@ docker build --build-arg commit=121b564a6b08942849372b9ffdcdddd7194b3e89 -t smc 
 ```
 ## Adding Tensorflow-GPU support
 
-This section assuming that your docker host has a GPUs and the nvidia-docker2 runtime is installed properly. Fo rmore infromation please see NVIDIA Container Toolkit/https://github.com/NVIDIA/nvidia-docker project.
-The test of the docker with GPUs support should give similar output:
+This section assuming that your docker host has a GPUs and the nvidia-docker2 runtime is installed properly. For more information please see the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker) project.
+
+Test of the docker with GPUs support should give a similar output:
+
 ```
 (base) [root@gput401 cocalc-docker]# docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all --rm nvidia/cuda:latest nvidia-smi
 Tue Jun 16 17:52:16 2020       
@@ -376,3 +378,4 @@ docker run -it --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all   --name=cocalc-gp
 ## Links
 
 * [CuCalc = CUDA + CoCalc Docker container](https://github.com/ktaletsk/CuCalc)
+* [NCT = NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker)
