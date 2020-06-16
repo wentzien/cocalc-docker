@@ -329,6 +329,49 @@ Also to build at a specific commit:
 ```
 docker build --build-arg commit=121b564a6b08942849372b9ffdcdddd7194b3e89 -t smc .
 ```
+## Adding Tensorflow-GPU support
+
+This section assuming that your docker host has a GPUs and the nvidia-docker2 runtime is installed properly. Fo rmore infromation please see NVIDIA Container Toolkit/https://github.com/NVIDIA/nvidia-docker project.
+The test of the docker with GPUs support should give similar output:
+```
+(base) [root@gput401 cocalc-docker]# docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all --rm nvidia/cuda:latest nvidia-smi
+Tue Jun 16 17:52:16 2020       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 440.64.00    Driver Version: 440.64.00    CUDA Version: 10.2     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  Tesla T4            Off  | 00000000:00:06.0 Off |                    0 |
+| N/A   31C    P0    16W /  70W |      0MiB / 15109MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+
+```
+
+If the test running w/o problems, you can start to rebuild your own cocalc docker image with tensorflow support:
+```
+cp  Dockerfile Dockerfile.gpu
+```
+Simply change first line in the Dockerfile.gpu 
+```
+#FROM ubuntu:18.04
+FROM tensorflow/tensorflow:latest-gpu
+```
+Rebuild your image:
+```
+docker build  -t cocalc-gpu -f Dockerfile.gpu .
+```
+Run it: 
+```
+docker run -it --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all   --name=cocalc-gpu -d -v ~/cocalc_test:/projects -p 443:443 -p 0.0.0.0:2222:22  --rm  cocalc-gpu  bash
+```
 
 ## Links
 
