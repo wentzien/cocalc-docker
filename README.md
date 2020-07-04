@@ -210,9 +210,9 @@ This does NOT set the password.  It just makes a password reset link, which you 
 - You do not have email setup.  It is possible to setup Sendgrid so your cocalc-docker image sends out email, but we haven't documented that yet...
 - You have email setup, but it sometimes fails for users with aggressive spam filtering.
 
-#### Account Creation Token
+#### Registration Tokens
 
-After making your main account an admin as above, search for "Account Creation Token" in the Admin tab. Put some random string there and other people will not be able to create accounts in your CoCalc container, without knowing that token.
+After making your main account an admin as above, search for " Registration Tokens" in the Admin tab.  Create one or more tokens and share them with people who you want to use your server.  Nobody else will be able to make an account.
 
 ### Terminal Height
 
