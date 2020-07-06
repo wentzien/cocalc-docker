@@ -252,6 +252,11 @@ RUN \
 RUN \
   pip3 install --no-cache-dir ipyleaflet
 
+# Other pip3 packages
+# NOTE: Upgrading zmq is very important, or the Ubuntu version breaks everything..
+RUN \
+  pip3 install --upgrade --no-cache-dir  pandas plotly scipy  scikit-learn seaborn bokeh zmq
+
 CMD /root/run.py
 
 ARG BUILD_DATE
