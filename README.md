@@ -231,6 +231,8 @@ Bam, you're root!
 
 NOTE: A project having sudo access is completely unrelated to a user in CoCAlc being an admin.  Neither implies the the other.
 
+NOTE: Obviously having a user able to run as root in a Docker container introduces additional security issues.
+
 ### Reset a user's password
 
 Sign in as a user that is an admin (see the previous section above).  Click on the Admin tab at the top, search for the user, and then click the "Password" toggle, and click "Request Password Reset Link...".
