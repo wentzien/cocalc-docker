@@ -230,7 +230,9 @@ Bam, you're root!
 
 NOTE: A project having sudo access is completely unrelated to a user in CoCAlc being an admin.  Neither implies the the other.
 
-NOTE: Obviously having a user able to run as root in a Docker container introduces additional security issues.
+NOTE: You can also use `visudo` to edit the file (which is better), or `EDITOR=emacs visudo` to edit it using emacs.
+
+WARNING: Obviously having a user able to run as root in a Docker container introduces additional security issues.
 
 ### Reset a user's password
 
