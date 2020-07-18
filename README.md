@@ -201,6 +201,36 @@ root@931045eda11f:/# make-user-admin wstein@gmail.com
 Obviously, you should really make the user you created (with its email address) an admin, not me!
 Refresh your browser, and then you should see an extra admin panel in the lower right of accounts settings; you can also open any project by directly visiting its URL.
 
+### Make a *project* have sudo access
+
+You can also make it so that running `sudo su` in a CoCalc terminal allows a project to gain root access.  First as above, from outside of CoCalc, do 
+`docker exec -it cocalc bash`, then type `visudo`:
+```
+$ docker exec -it cocalc bash
+root@931045eda11f:/# visudo
+```
+
+Then run this echo command, but replace `0630f773c01847e79c0863c0118fe0de` by the project id with all dashes removed:
+```
+echo '0630f773c01847e79c0863c0118fe0de ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers
+```
+Alternatively, you can get the username by typing `whoami` in a terminal from the project:
+```
+~$ whoami
+0630f773c01847e79c0863c0118fe0de
+```
+
+After the above echo command, go to a terminal in your project and try `sudo su`:
+```
+~$ sudo su
+root@121119037fd4:/projects/0630f773-c018-47e7-9c08-63c0118fe0de# ls /root
+run.py
+root@121119037fd4:/projects/0630f773-c018-47e7-9c08-63c0118fe0de# 
+```
+Bam, you're root!
+
+NOTE: A project having sudo access is completely unrelated to a user in CoCAlc being an admin.  Neither implies the the other.
+
 ### Reset a user's password
 
 Sign in as a user that is an admin (see the previous section above).  Click on the Admin tab at the top, search for the user, and then click the "Password" toggle, and click "Request Password Reset Link...".
