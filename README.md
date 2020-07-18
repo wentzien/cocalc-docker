@@ -212,7 +212,7 @@ root@931045eda11f:/# visudo
 
 Then run this echo command, but replace `0630f773c01847e79c0863c0118fe0de` by the project id with all dashes removed:
 ```
-echo '0630f773c01847e79c0863c0118fe0de ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers
+echo '0630f773c01847e79c0863c0118fe0de ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 ```
 Alternatively, you can get the username by typing `whoami` in a terminal from the project:
 ```
@@ -225,7 +225,6 @@ After the above echo command, go to a terminal in your project and try `sudo su`
 ~$ sudo su
 root@121119037fd4:/projects/0630f773-c018-47e7-9c08-63c0118fe0de# ls /root
 run.py
-root@121119037fd4:/projects/0630f773-c018-47e7-9c08-63c0118fe0de# 
 ```
 Bam, you're root!
 
