@@ -231,7 +231,7 @@ COPY bashrc /root/.bashrc
 ## Since the official distro packages are ancient.
 RUN \
      apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb websockify curl \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb xsel websockify curl \
   && curl https://xpra.org/gpg.asc | apt-key add - \
   && echo "deb http://xpra.org/ bionic main" > /etc/apt/sources.list.d/xpra.list \
   && apt-get update \
