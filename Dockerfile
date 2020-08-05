@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 MAINTAINER William Stein <wstein@sagemath.com>
 
@@ -42,15 +42,15 @@ RUN \
        net-tools \
        wget \
        git \
+       python3 \
        python \
-       python-pip \
+       python3-pip \
        make \
        g++ \
        sudo \
        psmisc \
        haproxy \
        nginx \
-       yapf \
        rsync \
        tidy
 
@@ -58,7 +58,6 @@ RUN \
      apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
        vim \
-       bup \
        inetutils-ping \
        lynx \
        telnet \
@@ -88,10 +87,6 @@ RUN \
        python3-yaml \
        python3-matplotlib \
        python3-jupyter* \
-       python-matplotlib* \
-       python-jupyter* \
-       python-ipywidgets \
-       python-ipywidgets-doc \
        python3-ipywidgets \
        jupyter \
        locales \
@@ -99,7 +94,6 @@ RUN \
        postgresql \
        postgresql-contrib \
        clang-format \
-       yapf \
        yapf3 \
        golang \
        r-cran-formatr
@@ -130,13 +124,19 @@ RUN \
   && cp -rv /usr/local/sage/local/share/texmf/tex/latex/sagetex/ /usr/share/texmf/tex/latex/ \
   && texhash
 
-# The Octave kernel.
+# install the Octave kernel.
+# NOTE: we delete the spec file and use our own spec for the octave kernel, since the
+# one that comes with Ubuntu 20.04 crashes (it uses python instead of python3).
 RUN \
-  pip install octave_kernel
+     pip3 install octave_kernel \
+  && rm -rf /usr/local/share/jupyter/kernels/octave
+
+# Pari/GP kernel support
+RUN sage --pip install pari_jupyter
 
 # Jupyter Lab
 RUN \
-  pip install jupyterlab
+  pip3 install jupyterlab
 
 # Install LEAN proof assistant
 RUN \
@@ -162,8 +162,19 @@ RUN \
   && apt-get install -y nodejs libxml2-dev libxslt-dev \
   && /usr/bin/npm install -g npm
 
+# Kernel for javascript (the node.js Jupyter kernel)
+RUN \
+     npm install --unsafe-perm -g ijavascript \
+  && ijsinstall --install=global
+
+# Kernel for Typescript -- commented out since seems flakie and
+# probably not generally interesting.
+#RUN \
+#     npm install --unsafe-perm -g itypescript \
+#  && its --install=global
+
 # Install Julia
-ARG JULIA=1.2.0
+ARG JULIA=1.5.0
 RUN cd /tmp \
  && wget https://julialang-s3.julialang.org/bin/linux/x64/${JULIA%.*}/julia-${JULIA}-linux-x86_64.tar.gz \
  && tar xf julia-${JULIA}-linux-x86_64.tar.gz -C /opt \
@@ -171,9 +182,9 @@ RUN cd /tmp \
  && mv /opt/julia-* /opt/julia \
  && ln -s /opt/julia/bin/julia /usr/local/bin
 
-# Install R Jupyter Kernel package into R itself (so R kernel works)
+# Install R Jupyter Kernel package into R itself (so R kernel works), and some other packages e.g., rmarkdown which requires reticulate to use Python.
 RUN echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'httr', 'devtools', 'uuid', 'digest', 'IRkernel'), repos='https://cloud.r-project.org')" | sage -R --no-save
-RUN echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'httr', 'devtools', 'uuid', 'digest', 'IRkernel'), repos='https://cloud.r-project.org')" | R --no-save
+RUN echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'httr', 'devtools', 'uuid', 'digest', 'IRkernel', 'rmarkdown', 'reticulate'), repos='https://cloud.r-project.org')" | R --no-save
 
 
 # Commit to checkout and build.
@@ -231,11 +242,7 @@ COPY bashrc /root/.bashrc
 ## Since the official distro packages are ancient.
 RUN \
      apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb xsel websockify curl \
-  && curl https://xpra.org/gpg.asc | apt-key add - \
-  && echo "deb http://xpra.org/ bionic main" > /etc/apt/sources.list.d/xpra.list \
-  && apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y xpra
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb xsel websockify curl xpra
 
 ## X11 apps to make x11 support useful.
 ## Will move this up in Dockerfile once stable.
@@ -247,19 +254,30 @@ RUN \
 
 # CoCalc Jupyter widgets
 RUN \
-  pip install --no-cache-dir ipyleaflet
-
-RUN \
   pip3 install --no-cache-dir ipyleaflet
+
+# The Jupyter kernel that gets auto-installed with some other jupyter Ubuntu packages
+# doesn't have some nice options regarding inline matplotlib (and possibly others), so
+# we delete it.
+RUN rm -rf /usr/share/jupyter/kernels/python3
 
 # Other pip3 packages
 # NOTE: Upgrading zmq is very important, or the Ubuntu version breaks everything..
 RUN \
   pip3 install --upgrade --no-cache-dir  pandas plotly scipy  scikit-learn seaborn bokeh zmq
 
+# We stick with PostgreSQL 10 for now, to avoid any issues with users having to
+# update to an incompatible version 12.  We don't use postgresql-12 features *yet*,
+# and won't upgrade until we need to.
+RUN \
+     sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' \
+  && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+  && apt-get update \
+  && apt-get install -y  postgresql-10
+
 CMD /root/run.py
 
 ARG BUILD_DATE
 LABEL org.label-schema.build-date=$BUILD_DATE
 
-EXPOSE 80 443
+EXPOSE 22 80 443
