@@ -69,21 +69,29 @@ Instead of mapping port 443 on the container to 443 on the host, map 443 on the 
 In your nginx `sites-available` folder, create a file like the following called e.g. `mycocalc`:
 
 ```
+map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+}
+
 server {
-    server_name mycocalc.com;
+    listen 443 ssl;
+    server_name             mycocalc.com;
+        
+    #These need to be obtained independently for example from https://letsencrypt.org/, by running "certbot certonly" on the docker host after DNS is setup
+    ssl_certificate         /etc/letsencrypt/live/mycocalc.com/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/mycocalc.com/privkey.pem;
 
     location / {
-        include proxy_params;
         # push traffic through the proxy to the port you mapped above, in this case 9090, on the localhost:
-        proxy_pass https://localhost:9090/;
-
+        proxy_pass https://localhost:9090;
+        
         # this enables proxying for websockets, which cocalc uses extensively:
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
+        proxy_set_header Connection $connection_upgrade;
         proxy_set_header Host $host;
     }
-    listen 443 ssl;
 }
 ```
 
