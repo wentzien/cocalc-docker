@@ -239,13 +239,11 @@ COPY run.py /root/run.py
 COPY bashrc /root/.bashrc
 
 ## Xpra backend support -- we have to use the debs from xpra.org,
-## Since the official distro packages are ancient.
 RUN \
      apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb xsel websockify curl xpra
 
 ## X11 apps to make x11 support useful.
-## Will move this up in Dockerfile once stable.
 RUN \
      apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps dbus-x11 gnome-terminal \
