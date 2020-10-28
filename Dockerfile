@@ -261,6 +261,9 @@ RUN \
 # we delete it.
 RUN rm -rf /usr/share/jupyter/kernels/python3
 
+# Fix pythontex for our use
+RUN ln -sf /usr/bin/pythontex /usr/bin/pythontex3
+
 # Other pip3 packages
 # NOTE: Upgrading zmq is very important, or the Ubuntu version breaks everything..
 RUN \
