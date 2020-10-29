@@ -37,6 +37,10 @@ NOTES:
     docker run --name=cocalc -d -v cocalc-volume:/projects -p 443:443 sagemathinc/cocalc
     ```
   - IMPORTANT: If you are deploying CoCalc for use over the web (so not just on localhost), it is probably necessary to obtain a **valid security certificate** instead of using the self-signed unsafe one that is in your Docker container.    See [this discussion](https://groups.google.com/forum/?utm_medium=email&utm_source=footer#!msg/cocalc/7QO1hJQQGYY/Zsev1G72AAAJ).
+  - If you are using Ubuntu as a host and would like the CoCalc instance to use your host's time and timezone, you can amend the run command as follows, which will use your host's timezone and localtime files inside the container:
+      ```
+      docker run --name=cocalc -d -v ~/cocalc:/projects -v "/etc/timezone:/etc/timezone" -v "/etc/localtime:/etc/localtime" -p 443:443 sagemathinc/cocalc
+      ```
 
 The above command will first download the image, then start CoCalc, storing your data in the directory `~/cocalc` on your computer. If you want to store your worksheets and edit history elsewhere, change `~/cocalc` to something else.  Once your local CoCalc is running, open your web browser to https://localhost.  (If you are using Microsoft Windows, instead open https://host.docker.internal/.)
 
