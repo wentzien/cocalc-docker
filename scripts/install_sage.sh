@@ -44,7 +44,6 @@ make
 
 cd "$SAGE_SRC_TARGET"/sage/
 make misc-clean
-make -C src/ clean
 
 rm -rf upstream/
 rm -rf src/doc/output/doctrees/
