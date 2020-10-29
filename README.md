@@ -14,7 +14,9 @@ This is a free open-source  multiuser CoCalc server that you can _**very easily*
 
 **SECURITY STATUS:**
   - This is _**not blatantly insecure**_ from outside attack: the database has a long random password, user accounts are separate, encrypted SSL communication is used by default, etc.
-  - That said, **a determined user with an account can easily access or change files of other users in the same container!** Use this for personal use, behind a firewall, or with an account creation token, so that only other people you trust create accounts.  Don't make one of these publicly available with important data in it and no account creation token! See [issue 2031]( https://github.com/sagemathinc/cocalc/issues/2031).  Basically, use this only with people you trust.
+  - That said, **a determined user with an account can easily access or change files of other users in the same container!** Open ports are exposed to users for reading/writing to project files, these can be used by authenticated users for accessing any other project's open files. Requests should only connect to the main hub process, which proxies traffic to the raw server with an auth key created by the project's secret key changing on every project startup, see [Issue 45](https://github.com/sagemathinc/cocalc-docker/issues/45). Also see the related issues for adding a user auth token to all requests required for each separate sub module, including JupyterLab server [Issue 46](https://github.com/sagemathinc/cocalc-docker/issues/46) and classical Jupyter in an iframe [Issue 47](https://github.com/sagemathinc/cocalc-docker/issues/47).
+  - There is no quota on project resource usage, so users could easily crash the server both intentionally or accidentally by running arbitrary code, and could also overflow the storage container by creating excessive files.
+  - Use this for personal use, behind a firewall, or with an account creation token, so that only other people you trust create accounts.  Don't make one of these publicly available with important data in it and no account creation token! See [issue 2031]( https://github.com/sagemathinc/cocalc/issues/2031).  Basically, use this only with people you trust.
   - See the [open docker-related CoCalc issues](https://github.com/sagemathinc/cocalc/issues?q=is%3Aopen+is%3Aissue+label%3AA-docker).
 
 ## Instructions
@@ -370,7 +372,53 @@ Also to build at a specific commit:
 ```
 docker build --build-arg commit=121b564a6b08942849372b9ffdcdddd7194b3e89 -t smc .
 ```
+## Adding Tensorflow-GPU support
+
+This section assuming that your docker host has a GPUs and the nvidia-docker2 runtime is installed properly. For more information please see the [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker) project.
+
+Test of the docker with GPUs support should give a similar output:
+
+```
+(base) [root@gput401 cocalc-docker]# docker run --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all --rm nvidia/cuda:latest nvidia-smi
+Tue Jun 16 17:52:16 2020       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 440.64.00    Driver Version: 440.64.00    CUDA Version: 10.2     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  Tesla T4            Off  | 00000000:00:06.0 Off |                    0 |
+| N/A   31C    P0    16W /  70W |      0MiB / 15109MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+
+```
+
+If the test running w/o problems, you can start to rebuild your own cocalc docker image with tensorflow support:
+```
+cp  Dockerfile Dockerfile.gpu
+```
+Simply change first line in the Dockerfile.gpu 
+```
+#FROM ubuntu:18.04
+FROM tensorflow/tensorflow:latest-gpu
+```
+Rebuild your image:
+```
+docker build  -t cocalc-gpu -f Dockerfile.gpu .
+```
+Run it: 
+```
+docker run -it --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=all   --name=cocalc-gpu -d -v ~/cocalc_test:/projects -p 443:443 -p 0.0.0.0:2222:22  --rm  cocalc-gpu  bash
+```
 
 ## Links
 
 * [CuCalc = CUDA + CoCalc Docker container](https://github.com/ktaletsk/CuCalc)
+* [NCT = NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-docker)
