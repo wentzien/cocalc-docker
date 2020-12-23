@@ -1,9 +1,9 @@
 build:
-	DOCKER_BUILDKIT=0  docker build --progress=plain -t cocalc .
+	DOCKER_BUILDKIT=0  docker build -t cocalc .
 
 build-full:
-	DOCKER_BUILDKIT=0  docker build --progress=plain --no-cache -t cocalc .
+	DOCKER_BUILDKIT=0  docker build --no-cache -t cocalc .
 
 minimal:
-	DOCKER_BUILDKIT=0  docker build --progress=plain -t cocalc-minimal -f Dockerfile.minimal .
+	DOCKER_BUILDKIT=0  docker build -t cocalc-minimal -f Dockerfile.minimal .
 
