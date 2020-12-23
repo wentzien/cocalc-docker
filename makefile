@@ -1,16 +1,9 @@
 build:
-	docker build -t cocalc .
+	DOCKER_BUILDKIT=0  docker build --progress=plain -t cocalc .
 
 build-full:
-	docker build --no-cache -t cocalc .
+	DOCKER_BUILDKIT=0  docker build --progress=plain --no-cache -t cocalc .
 
-light:
-	docker build -t cocalc-light -f Dockerfile-light .
-
-run:
-	mkdir -p data/projects && docker run --name=cocalc-light -d -p 443 -p 80:80 -v `pwd`/data/projects:/projects -P cocalc
-	
-run-light:
-	mkdir -p data/projects-light && docker run --name=cocalc-light -d -p 443:443 -p 80:80 -v `pwd`/data/projects:/projects -P cocalc-light
-
+minimal:
+	DOCKER_BUILDKIT=0  docker build --progress=plain -t cocalc-minimal -f Dockerfile.minimal .
 

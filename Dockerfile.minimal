@@ -1,0 +1,149 @@
+FROM ubuntu:20.10
+
+LABEL William Stein <wstein@sagemath.com>
+
+USER root
+
+# See https://github.com/sagemathinc/cocalc/issues/921
+ENV LC_ALL C.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV TERM screen
+
+# So we can source (see http://goo.gl/oBPi5G)
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# Minimal ubuntu software that are needed to get CoCalc to build and run, and 
+# note much more.
+RUN \
+     apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+       software-properties-common \
+       liblog-log4perl-perl \
+       flex \
+       bison \
+       libreadline-dev \
+       net-tools \
+       wget \
+       git \
+       python3 \
+       python3-pip \
+       make \
+       g++ \
+       sudo \
+       psmisc \
+       haproxy \
+       nginx \
+       rsync \
+       tidy \
+       vim \
+       inetutils-ping \
+       lynx \
+       telnet \
+       ssh \
+       m4 \
+       libpq5 \
+       libpq-dev \
+       build-essential \
+       automake \
+       dpkg-dev \
+       libssl-dev \
+       libcurl4-openssl-dev \
+       smem \
+       python3-yaml \
+       python3-matplotlib \
+       python3-jupyter* \
+       python3-ipywidgets \
+       python \
+       jupyter \
+       locales \
+       locales-all \
+       postgresql \
+       postgresql-contrib \
+       clang-format \
+       yapf3 \
+       golang \
+       nodejs \
+       npm \
+       libxml2-dev \
+       libxslt-dev \
+       libsqlite3-dev \
+       tmux
+
+# Install npm 7.1 over /usr/bin/npm, which cocalc requires. (This is ugly!)
+RUN npm install -g --prefix=/usr -f npm@7.1
+
+# Kernel for javascript (the node.js Jupyter kernel)
+RUN \
+     npm install --unsafe-perm -g ijavascript \
+  && ijsinstall --install=global
+
+# Commit to checkout and build.
+ARG commit=HEAD
+
+# Pull latest source code for CoCalc and checkout requested commit (or HEAD)
+RUN \
+     git clone https://github.com/sagemathinc/cocalc.git \
+  && cd /cocalc && git pull && git fetch origin && git checkout ${commit:-HEAD}
+
+# Build and install cocalc itself.
+# CRITICAL to install first web, then compute, since compute precompiles all the .js
+# for fast startup, but unfortunately doing so breaks ./install.py all --web, since
+# the .js files laying around somehow mess up cjsx loading.
+RUN \
+     cd /cocalc/src \
+  && . ./smc-env \
+  && ./install.py all --web \
+  && rm -rf /root/.npm /root/.node-gyp/
+
+RUN \
+     cd /cocalc/src && . ./smc-env \
+  && ./install.py all --compute \
+  && rm -rf /root/.npm /root/.node-gyp/
+
+RUN echo "umask 077" >> /etc/bash.bashrc
+
+# Build a UTF-8 locale, so that tmux works -- see https://unix.stackexchange.com/questions/277909/updated-my-arch-linux-server-and-now-i-get-tmux-need-utf-8-locale-lc-ctype-bu
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+
+### Configuration
+
+COPY login.defs /etc/login.defs
+COPY login /etc/defaults/login
+COPY nginx.conf /etc/nginx/sites-available/default
+COPY haproxy.conf /etc/haproxy/haproxy.cfg
+COPY run.py /root/run.py
+COPY bashrc /root/.bashrc
+
+## Xpra backend support -- we have to use the debs from xpra.org,
+RUN \
+     apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb xsel websockify curl xpra
+
+## X11 apps to make x11 support actually work.
+RUN \
+     apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps dbus-x11 xdotool xclip x11-xkb-utils 
+
+# CoCalc Jupyter widgets needs this
+RUN \
+  pip3 install --no-cache-dir ipyleaflet
+
+# The Jupyter kernel that gets auto-installed with some other jupyter Ubuntu packages
+# doesn't have some nice options regarding inline matplotlib (and possibly others), so
+# we delete it and replace it with our own.
+RUN rm -rf /usr/share/jupyter/kernels/python3
+COPY kernels/python3-ubuntu /usr/local/share/jupyter/kernels/python3-ubuntu
+
+RUN \
+     sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' \
+  && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+  && apt-get update \
+  && apt-get install -y  postgresql-12
+
+CMD /root/run.py
+
+ARG BUILD_DATE
+LABEL org.label-schema.build-date=$BUILD_DATE
+
+EXPOSE 22 80 443
