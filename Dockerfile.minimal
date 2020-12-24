@@ -33,11 +33,8 @@ RUN \
        haproxy \
        nginx \
        rsync \
-       tidy \
        vim \
        inetutils-ping \
-       lynx \
-       telnet \
        ssh \
        m4 \
        libpq5 \
@@ -60,21 +57,14 @@ RUN \
        postgresql-contrib \
        clang-format \
        yapf3 \
-       golang \
        nodejs \
        npm \
        libxml2-dev \
        libxslt-dev \
-       libsqlite3-dev \
-       tmux
+       libsqlite3-dev
 
-# Install npm 7.1 over /usr/bin/npm, which cocalc requires. (This is ugly!)
-RUN npm install -g --prefix=/usr -f npm@7.1
-
-# Kernel for javascript (the node.js Jupyter kernel)
-RUN \
-     npm install --unsafe-perm -g ijavascript \
-  && ijsinstall --install=global
+# Install npm 7.x over /usr/bin/npm, which cocalc requires. (This is ugly!)
+RUN npm install -g --prefix=/usr -f npm@7.3.0
 
 # Commit to checkout and build.
 ARG commit=HEAD
