@@ -99,12 +99,12 @@ RUN \
 RUN \
      cd /cocalc/src \
   && . ./smc-env \
-  && ./install.py all --web \
+  && ./install.py all --web
 
 # Install specific to compute:
 RUN \
      cd /cocalc/src && . ./smc-env \
-  && ./install.py all --compute \
+  && ./install.py all --compute
 
 # Clean up
 RUN rm -rf /root/.npm /root/.node-gyp/
