@@ -9,3 +9,6 @@ build-full:
 minimal:
 	DOCKER_BUILDKIT=0  docker build -t cocalc-minimal -f Dockerfile.minimal .
 
+minimal-full:
+	DOCKER_BUILDKIT=0  docker build --no-cache -t cocalc-minimal -f Dockerfile.minimal .
+

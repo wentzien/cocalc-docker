@@ -5,10 +5,7 @@ LABEL William Stein <wstein@sagemath.com>
 USER root
 
 # See https://github.com/sagemathinc/cocalc/issues/921
-ENV LC_ALL C.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV TERM screen
+ENV LC_ALL=C.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US:en TERM=screen
 
 # So we can source (see http://goo.gl/oBPi5G)
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
@@ -17,6 +14,7 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 # note much more.
 RUN \
      apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
        software-properties-common \
        liblog-log4perl-perl \
