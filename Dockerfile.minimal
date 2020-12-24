@@ -1,4 +1,4 @@
-FROM ubuntu:20.10
+FROM ubuntu:20.04
 
 LABEL William Stein <wstein@sagemath.com>
 
@@ -87,27 +87,36 @@ RUN \
   && cd /cocalc && git pull && git fetch origin && git checkout ${commit:-HEAD}
 
 # Build and install cocalc itself.
+RUN \
+     cd /cocalc/src \
+  && . ./smc-env \
+  && npm run make
+
 # CRITICAL to install first web, then compute, since compute precompiles all the .js
 # for fast startup, but unfortunately doing so breaks ./install.py all --web, since
 # the .js files laying around somehow mess up cjsx loading.
+# Generates the static web application:
 RUN \
      cd /cocalc/src \
   && . ./smc-env \
   && ./install.py all --web \
-  && rm -rf /root/.npm /root/.node-gyp/
 
+# Install specific to compute:
 RUN \
      cd /cocalc/src && . ./smc-env \
   && ./install.py all --compute \
-  && rm -rf /root/.npm /root/.node-gyp/
 
+# Clean up
+RUN rm -rf /root/.npm /root/.node-gyp/
+
+# Lock down generic systemwide default permission here, so that one project doesn't
+# have read access to another by default (which is NOT good).
 RUN echo "umask 077" >> /etc/bash.bashrc
 
 # Build a UTF-8 locale, so that tmux works -- see https://unix.stackexchange.com/questions/277909/updated-my-arch-linux-server-and-now-i-get-tmux-need-utf-8-locale-lc-ctype-bu
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 
 ### Configuration
-
 COPY login.defs /etc/login.defs
 COPY login /etc/defaults/login
 COPY nginx.conf /etc/nginx/sites-available/default
