@@ -122,16 +122,6 @@ COPY haproxy.conf /etc/haproxy/haproxy.cfg
 COPY run.py /root/run.py
 COPY bashrc /root/.bashrc
 
-## Xpra backend support -- we have to use the debs from xpra.org,
-RUN \
-     apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb xsel websockify curl xpra
-
-## X11 apps to make x11 support actually work.
-RUN \
-     apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y x11-apps dbus-x11 xdotool xclip x11-xkb-utils 
-
 # CoCalc Jupyter widgets needs this
 RUN \
   pip3 install --no-cache-dir ipyleaflet
@@ -146,7 +136,7 @@ RUN \
      sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' \
   && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
   && apt-get update \
-  && apt-get install -y  postgresql-12
+  && apt-get install -y  postgresql-13
 
 CMD /root/run.py
 
