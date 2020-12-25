@@ -1,14 +1,12 @@
 build:
 	DOCKER_BUILDKIT=0  docker build -t cocalc .
 
-build-full:
+build-no-cache:
 	DOCKER_BUILDKIT=0  docker build --no-cache -t cocalc .
 
+personal:
+	DOCKER_BUILDKIT=0  docker build -t cocalc-personal -f Dockerfile-personal .
 
-# WARNING: this minimal is a work in progress that does NOT work yet.
-minimal:
-	DOCKER_BUILDKIT=0  docker build -t cocalc-minimal -f Dockerfile.minimal .
-
-minimal-full:
-	DOCKER_BUILDKIT=0  docker build --no-cache -t cocalc-minimal -f Dockerfile.minimal .
+personal-no-cache:
+	DOCKER_BUILDKIT=0  docker build --no-cache -t cocalc-personal -f Dockerfile-personal .
 

@@ -89,7 +89,7 @@ def root_ssh_keys():
     run("cp -v /root/.ssh/id_ecdsa.pub /root/.ssh/authorized_keys")
 
 def start_hub():
-    run(". smc-env && hub start \
+    c = ". smc-env && hub start \
             --host=localhost \
             --port 5000 \
             --proxy_port 5001 \
@@ -98,8 +98,10 @@ def start_hub():
             --update \
             --single \
             --logfile /var/log/hub.log \
-            --pidfile /run/hub.pid &", \
-        path='/cocalc/src')
+            --pidfile /run/hub.pid"
+    if os.environ.get("COCALC_PERSONAL", False):
+        c += '\\\n     --personal'
+    run(c, path='/cocalc/src')
 
 def postgres_perms():
     run("mkdir -p /projects/postgres && chown -R postgres. /projects/postgres && chmod og-rwx -R /projects/postgres")

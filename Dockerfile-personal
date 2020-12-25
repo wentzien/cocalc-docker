@@ -7,10 +7,14 @@ USER root
 # See https://github.com/sagemathinc/cocalc/issues/921
 ENV LC_ALL=C.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US:en TERM=screen
 
+# This sets things so that hub runs in a mode with only one account
+# and no sign in.  This is meant for personal use on a personal compute.
+ENV COCALC_PERSONAL=yes
+
 # So we can source (see http://goo.gl/oBPi5G)
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-# Minimal ubuntu software that are needed to get CoCalc to build and run, and 
+# Minimal ubuntu software that are needed to get CoCalc to build and run, and
 # note much more.
 RUN \
      apt-get update \
@@ -98,7 +102,8 @@ RUN \
 RUN rm -rf /root/.npm /root/.node-gyp/
 
 # Lock down generic systemwide default permission here, so that one project doesn't
-# have read access to another by default (which is NOT good).
+# have read access to another by default.  We still want good separation between
+# projects even for personal mode.
 RUN echo "umask 077" >> /etc/bash.bashrc
 
 # Build a UTF-8 locale, so that tmux works -- see https://unix.stackexchange.com/questions/277909/updated-my-arch-linux-server-and-now-i-get-tmux-need-utf-8-locale-lc-ctype-bu
@@ -133,4 +138,4 @@ CMD /root/run.py
 ARG BUILD_DATE
 LABEL org.label-schema.build-date=$BUILD_DATE
 
-EXPOSE 22 80 443
+EXPOSE 22 80
