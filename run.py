@@ -109,19 +109,19 @@ def postgres_perms():
 def start_postgres():
     postgres_perms()
     if not os.path.exists(PGDATA):  # see comments in smc/src/dev/project/start_postgres.py
-        run("sudo -u postgres /usr/lib/postgresql/12/bin/pg_ctl init -D '%s'"%PGDATA)
+        run("sudo -u postgres /usr/lib/postgresql/13/bin/pg_ctl init -D '%s'"%PGDATA)
         open(os.path.join(PGDATA,'pg_hba.conf'), 'w').write("local all all trust")
         conf = os.path.join(PGDATA, 'postgresql.conf')
         s = open(conf).read() + "\nunix_socket_directories = '%s'\nlisten_addresses=''\n"%PGHOST
         open(conf,'w').write(s)
         os.makedirs(PGHOST)
         postgres_perms()
-        run("sudo -u postgres /usr/lib/postgresql/12/bin/postgres -D '%s' >%s/postgres.log 2>&1 &"%(PGDATA, PGDATA))
+        run("sudo -u postgres /usr/lib/postgresql/13/bin/postgres -D '%s' >%s/postgres.log 2>&1 &"%(PGDATA, PGDATA))
         time.sleep(5)
-        run("sudo -u postgres /usr/lib/postgresql/12/bin/createuser -h '%s' -sE smc"%PGHOST)
+        run("sudo -u postgres /usr/lib/postgresql/13/bin/createuser -h '%s' -sE smc"%PGHOST)
         run("sudo -u postgres kill %s"%(open(os.path.join(PGDATA, 'postmaster.pid')).read().split()[0]))
         time.sleep(3)
-    os.system("sudo -u postgres /usr/lib/postgresql/12/bin/postgres -D '%s' > /var/log/postgres.log 2>&1 &"%PGDATA)
+    os.system("sudo -u postgres /usr/lib/postgresql/13/bin/postgres -D '%s' > /var/log/postgres.log 2>&1 &"%PGDATA)
 
 def reset_project_state():
     while True:

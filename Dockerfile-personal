@@ -57,8 +57,6 @@ RUN \
        jupyter \
        locales \
        locales-all \
-       postgresql \
-       postgresql-contrib \
        clang-format \
        yapf3 \
        nodejs \
