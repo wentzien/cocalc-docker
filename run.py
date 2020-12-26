@@ -99,9 +99,22 @@ def start_hub():
             --single \
             --logfile /var/log/hub.log \
             --pidfile /run/hub.pid"
-    if os.environ.get("COCALC_PERSONAL", False):
+    if os.environ.get("COCALC_PERSONAL", False) == 'yes':
+        print("COCALC_PERSONAL: setting hub to authenticate all connections as first user")
         c += '\\\n     --personal'
     run(c, path='/cocalc/src')
+
+def personal_sudo():
+    # When running in personal mode, make it so ALL users
+    # can use sudo with no password.   We are assuming that
+    # all projects have full access to the system and there
+    # is only one user!
+    if not os.environ.get("COCALC_PERSONAL", False) == "yes":
+        print("COCALC_PERSONAL NOT set")
+        run("rm -f /etc/sudoers.d/cocalc-personal")
+        return
+    print("COCALC_PERSONAL: giving ALL Linux users (i.e., projects) full sudo")
+    run('echo "ALL ALL=NOPASSWD: ALL" > /etc/sudoers.d/cocalc-personal && chmod 0440 /etc/sudoers.d/cocalc-personal')
 
 def postgres_perms():
     run("mkdir -p /projects/postgres && chown -R postgres. /projects/postgres && chmod og-rwx -R /projects/postgres")
@@ -143,6 +156,7 @@ def tail_logs():
     run("tail -f /var/log/compute.log /var/log/compute.err /cocalc/logs/*")
 
 def main():
+    personal_sudo()
     self_signed_cert('/run/haproxy.pem')
     init_projects_path()
     start_services()
