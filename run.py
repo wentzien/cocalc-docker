@@ -89,7 +89,7 @@ def root_ssh_keys():
     run("cp -v /root/.ssh/id_ecdsa.pub /root/.ssh/authorized_keys")
 
 def start_hub():
-    c = ". smc-env && hub start \
+    run(". smc-env && hub start \
             --host=localhost \
             --port 5000 \
             --proxy_port 5001 \
@@ -98,43 +98,28 @@ def start_hub():
             --update \
             --single \
             --logfile /var/log/hub.log \
-            --pidfile /run/hub.pid"
-    if os.environ.get("COCALC_PERSONAL", False) == 'yes':
-        print("COCALC_PERSONAL: setting hub to authenticate all connections as first user")
-        c += '\\\n     --personal'
-    run(c, path='/cocalc/src')
-
-def personal_sudo():
-    # When running in personal mode, make it so ALL users
-    # can use sudo with no password.   We are assuming that
-    # all projects have full access to the system and there
-    # is only one user!
-    if not os.environ.get("COCALC_PERSONAL", False) == "yes":
-        print("COCALC_PERSONAL NOT set")
-        run("rm -f /etc/sudoers.d/cocalc-personal")
-        return
-    print("COCALC_PERSONAL: giving ALL Linux users (i.e., projects) full sudo")
-    run('echo "ALL ALL=NOPASSWD: ALL" > /etc/sudoers.d/cocalc-personal && chmod 0440 /etc/sudoers.d/cocalc-personal')
+            --pidfile /run/hub.pid &", \
+        path='/cocalc/src')
 
 def postgres_perms():
-    run("mkdir -p /projects/postgres && chown -R postgres. /projects/postgres && chmod og-rwx -R /projects/postgres")
+    run("mkdir -p /projects/postgres && chown -R sage. /projects/postgres && chmod og-rwx -R /projects/postgres")
 
 def start_postgres():
     postgres_perms()
     if not os.path.exists(PGDATA):  # see comments in smc/src/dev/project/start_postgres.py
-        run("sudo -u postgres /usr/lib/postgresql/13/bin/pg_ctl init -D '%s'"%PGDATA)
+        run("sudo -u sage /usr/lib/postgresql/10/bin/pg_ctl init -D '%s'"%PGDATA)
         open(os.path.join(PGDATA,'pg_hba.conf'), 'w').write("local all all trust")
         conf = os.path.join(PGDATA, 'postgresql.conf')
         s = open(conf).read() + "\nunix_socket_directories = '%s'\nlisten_addresses=''\n"%PGHOST
         open(conf,'w').write(s)
         os.makedirs(PGHOST)
         postgres_perms()
-        run("sudo -u postgres /usr/lib/postgresql/13/bin/postgres -D '%s' >%s/postgres.log 2>&1 &"%(PGDATA, PGDATA))
+        run("sudo -u sage /usr/lib/postgresql/10/bin/postgres -D '%s' >%s/postgres.log 2>&1 &"%(PGDATA, PGDATA))
         time.sleep(5)
-        run("sudo -u postgres /usr/lib/postgresql/13/bin/createuser -h '%s' -sE smc"%PGHOST)
-        run("sudo -u postgres kill %s"%(open(os.path.join(PGDATA, 'postmaster.pid')).read().split()[0]))
+        run("sudo -u sage /usr/lib/postgresql/10/bin/createuser -h '%s' -sE smc"%PGHOST)
+        run("sudo -u sage kill %s"%(open(os.path.join(PGDATA, 'postmaster.pid')).read().split()[0]))
         time.sleep(3)
-    os.system("sudo -u postgres /usr/lib/postgresql/13/bin/postgres -D '%s' > /var/log/postgres.log 2>&1 &"%PGDATA)
+    os.system("sudo -u sage /usr/lib/postgresql/10/bin/postgres -D '%s' > /var/log/postgres.log 2>&1 &"%PGDATA)
 
 def reset_project_state():
     while True:
@@ -156,7 +141,6 @@ def tail_logs():
     run("tail -f /var/log/compute.log /var/log/compute.err /cocalc/logs/*")
 
 def main():
-    personal_sudo()
     self_signed_cert('/run/haproxy.pem')
     init_projects_path()
     start_services()

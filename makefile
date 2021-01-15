@@ -1,12 +1,16 @@
 build:
-	DOCKER_BUILDKIT=0  docker build -t cocalc .
+	docker build -t cocalc .
 
-build-no-cache:
-	DOCKER_BUILDKIT=0  docker build --no-cache -t cocalc .
+build-full:
+	docker build --no-cache -t cocalc .
 
-personal:
-	DOCKER_BUILDKIT=0  docker build -t cocalc-personal -f Dockerfile-personal .
+light:
+	docker build -t cocalc-light -f Dockerfile-light .
 
-personal-no-cache:
-	DOCKER_BUILDKIT=0  docker build --no-cache -t cocalc-personal -f Dockerfile-personal .
+run:
+	mkdir -p data/projects && docker run --name=cocalc-light -d -p 443 -p 80:80 -v `pwd`/data/projects:/projects -P cocalc
+	
+run-light:
+	mkdir -p data/projects-light && docker run --name=cocalc-light -d -p 443:443 -p 80:80 -v `pwd`/data/projects:/projects -P cocalc-light
+
 

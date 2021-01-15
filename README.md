@@ -25,7 +25,7 @@ Install Docker on your computer (e.g., `apt-get install docker.io` on Ubuntu).  
 
     docker run --name=cocalc -d -v ~/cocalc:/projects -p 443:443 sagemathinc/cocalc
 
-wait a few minutes for the image to pull, decompress and the container to start, then visit https://localhost.  (If you are using Microsoft Windows, instead open https://host.docker.internal/.) It is expected that you'll see a "Your connection is not private" warning, since you haven't set up a security certificate.  Click "Show advanced" and "Proceed to localhost (unsafe)".  **IMPORTANT:** On some OS's and browsers you might not be given an option to "Proceed to localhost (unsafe)" -- [issue 112](https://github.com/sagemathinc/cocalc-docker/issues/112).
+wait a few minutes for the image to pull, decompress and the container to start, then visit https://localhost.  (If you are using Microsoft Windows, instead open https://host.docker.internal/.) It is expected that you'll see a "Your connection is not private" warning, since you haven't set up a security certificate.  Click "Show advanced" and "Proceed to localhost (unsafe)".
 
 NOTES:
  - This Docker image only supports 64-bit Intel.
