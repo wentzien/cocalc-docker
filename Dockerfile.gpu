@@ -1,4 +1,6 @@
 FROM ubuntu:20.04
+FROM tensorflow/tensorflow:latest-gpu
+
 
 MAINTAINER William Stein <wstein@sagemath.com>
 
